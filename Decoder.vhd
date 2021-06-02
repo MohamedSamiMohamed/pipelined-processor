@@ -1,21 +1,28 @@
-Library ieee;
-use ieee.std_logic_1164.all;
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
 
-entity Decoder3x8 is
-port(
-En : in std_logic;
-Se : in std_logic_vector(2 downto 0);
-O : out std_logic_vector(7 downto 0));
-end Decoder3x8;
+ENTITY Decoder3x8 IS
+    PORT (
+        En : IN STD_LOGIC;
+        Se : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+        O : OUT STD_LOGIC_VECTOR(7 DOWNTO 0));
+END Decoder3x8;
 
-Architecture Decoder_Arch of Decoder3x8 is 
-begin
-O<=	  "00000001"  when Se="000" AND En= '1'
-Else    "00000010"  when Se="001" AND En= '1'
-Else    "00000100"  when Se="010" AND En= '1'
-Else    "00001000"  when Se="011" AND En= '1'
-Else    "00010000"  when Se="100" AND En= '1'
-Else    "00100000"  when Se="101" AND En= '1'
-Else    "01000000"  when Se="110" AND En= '1'
-Else    "10000000"  when Se="111" AND En= '1';
-end Architecture;
+ARCHITECTURE Decoder_Arch OF Decoder3x8 IS
+BEGIN
+    O <= "00000001" WHEN Se = "000" AND En = '1'
+        ELSE
+        "00000010" WHEN Se = "001" AND En = '1'
+        ELSE
+        "00000100" WHEN Se = "010" AND En = '1'
+        ELSE
+        "00001000" WHEN Se = "011" AND En = '1'
+        ELSE
+        "00010000" WHEN Se = "100" AND En = '1'
+        ELSE
+        "00100000" WHEN Se = "101" AND En = '1'
+        ELSE
+        "01000000" WHEN Se = "110" AND En = '1'
+        ELSE
+        "10000000" WHEN Se = "111" AND En = '1';
+END ARCHITECTURE;

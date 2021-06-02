@@ -1,23 +1,23 @@
 LIBRARY IEEE;
-USE IEEE.std_logic_1164.all;
+USE IEEE.std_logic_1164.ALL;
 
-ENTITY Mux_2x1 is
-port (
-	in_mux0 : IN std_logic_vector (31 downto 0);
-	in_mux1 : IN std_logic_vector (31 downto 0);
-	Sel	: IN std_logic;
-	out_mux : OUT std_logic_vector (31 downto 0)
+ENTITY Mux_2x1 IS
+	PORT (
+		in_mux0 : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+		in_mux1 : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+		Sel : IN STD_LOGIC;
+		out_mux : OUT STD_LOGIC_VECTOR (31 DOWNTO 0)
 	);
-end Mux_2x1;
+END Mux_2x1;
 
-architecture Mux2_arch of Mux_2x1 is
-begin
-	process (in_mux0,in_mux1,Sel)
-	begin
-		case Sel is
-			when '0' => out_mux <= in_mux0;
-			when '1' => out_mux <= in_mux1;
-			when others => out_mux <= "00000000000000000000000000000000";
-		end case;
-	end process;
-end Mux2_arch;
+ARCHITECTURE Mux2_arch OF Mux_2x1 IS
+BEGIN
+	PROCESS (in_mux0, in_mux1, Sel)
+	BEGIN
+		CASE Sel IS
+			WHEN '0' => out_mux <= in_mux0;
+			WHEN '1' => out_mux <= in_mux1;
+			WHEN OTHERS => out_mux <= "00000000000000000000000000000000";
+		END CASE;
+	END PROCESS;
+END Mux2_arch;
