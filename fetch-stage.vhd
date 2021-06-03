@@ -79,3 +79,8 @@ BEGIN
     --increment PC and outputs it to the IF-ID buffer
     PC_adder : Adder PORT MAP(PC_Incremental, OutputPC, IncrementedPc);
 END fetchStageArch;
+
+------------------------------TODO------------------------
+--Update the component to make inst is only output not inout
+--make the output inst goes to the instTypeDetection by a signal
+--update the PC reset value to be the data in the first location in instMem

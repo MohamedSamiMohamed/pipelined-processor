@@ -25,3 +25,5 @@ BEGIN
     -- and the the higher cell --which contains opCode of the next instruction or the offset of the current instruction-- on the least significant word
     RamDataOut <= RamArray(to_integer(unsigned(PC))) & RamArray(to_integer(unsigned(PC) + 1));
 END instRamArch;
+------------------------------TODO------------------
+--Update the component to output the data of MEM (0) to be inserted in the PC at RESET
