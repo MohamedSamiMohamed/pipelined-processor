@@ -25,6 +25,7 @@ LDM R1,5     #R1=5
 AND R1,R5
 STD R2,200(R5) 
 SHR R2,3
+call R2
 
 # Credit test case ends here
 SETC

@@ -1,0 +1,44 @@
+.ORG 0  #this means the the following line would be  at address  0 , and this is the reset address
+2
+.ORG 2
+nop
+setc
+clrc
+clr r2
+not r2
+inc r2
+dec r2
+neg r2
+out r2
+in r2
+mov r2,r7
+add r2,r7
+sub r2,r7
+and r2,r7
+or r2,r7
+IADD r2,1
+#----------- imm
+shl r2,1
+#-------------imm
+shr r2,1
+#-------------imm
+rlc r2
+rrc r2
+push r2
+#---------------- decsp
+POP r2
+LDM r2,1
+#----------------imm
+LDD R2,1(R7)
+#----------------offset
+STD R2,1(R7)
+#----------------offset
+JZ r2
+JN r2
+JC r2
+JMP r2
+CALL r2
+#--------------------decsp
+#--------------------jmp r2
+RET
+
