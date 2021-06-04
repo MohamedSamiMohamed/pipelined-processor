@@ -79,7 +79,7 @@ with open("our test case .txt") as codeFile:
 
 print(instructions)
 memlocation=0
-decodedInstruction=["0000000000000000"]*50
+decodedInstruction=["0000000000000000"]*4095
 for instruction in instructions:
     if(instruction.find(".ORG")!=-1):
         print("i'm org")
@@ -100,9 +100,10 @@ for instruction in instructions:
 fOut = open("assemblerOutput.txt","w")
 fOut.write("\n".join(decodedInstruction))
 memory="// memory data file (do not edit the following line - required for mem load use) \n// instance=/fetchstage/Mem/RamArray \n// format=mti addressradix=d dataradix=s version=1.0 wordsperline=1\n"
-for instruction in instructions:
-    memory+=str(memlocation)+": "
-
+i=0
+for instruction in decodedInstruction:
+    memory+=str(i)+": "+decodedInstruction[i]+"\n"
+    i+=1
 
 outputFile = open("inst-memory.mem","w")
 outputFile.writelines(memory)
