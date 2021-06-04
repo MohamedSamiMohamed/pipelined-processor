@@ -5,7 +5,7 @@ USE IEEE.numeric_std.ALL;
 ENTITY PC_Register IS
     PORT (
         Clk, Rst : IN STD_LOGIC;
-        ResetValue : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        ResetValue : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         d : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         q : OUT STD_LOGIC_VECTOR(31 DOWNTO 0));
 END ENTITY;
@@ -14,7 +14,7 @@ BEGIN
     PROCESS (Clk, Rst)
     BEGIN
         IF Rst = '1' THEN
-            q <= ResetValue;
+            q <= "0000000000000000" & ResetValue;
         ELSIF rising_edge(Clk) THEN
             q <= d;
         END IF;

@@ -13,7 +13,7 @@ ENTITY fetchStage IS
         PcSrc : IN STD_LOGIC;
         ReadData1 : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         IncrementedPc : INOUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-        inst : INOUT STD_LOGIC_VECTOR(31 DOWNTO 0)
+        inst : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
     );
 END ENTITY;
 
@@ -34,7 +34,8 @@ ARCHITECTURE fetchStageArch OF fetchStage IS
         );
         PORT (
             PC : IN STD_LOGIC_VECTOR(RamAddrWidth - 1 DOWNTO 0);
-            RamDataOut : OUT STD_LOGIC_VECTOR((2 * RamWidth) - 1 DOWNTO 0)
+            RamDataOut : OUT STD_LOGIC_VECTOR((2 * RamWidth) - 1 DOWNTO 0);
+            loc0 : OUT STD_LOGIC_VECTOR((RamWidth) - 1 DOWNTO 0)
         );
     END COMPONENT;
     COMPONENT instTypeDetector IS
@@ -48,7 +49,7 @@ ARCHITECTURE fetchStageArch OF fetchStage IS
     COMPONENT PC_Register IS
         PORT (
             Clk, Rst : IN STD_LOGIC;
-            ResetValue : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+            ResetValue : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
             d : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
             q : OUT STD_LOGIC_VECTOR(31 DOWNTO 0));
     END COMPONENT;
@@ -63,24 +64,22 @@ ARCHITECTURE fetchStageArch OF fetchStage IS
     SIGNAL OutputPC : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL PC_Incremental_sel : STD_LOGIC;
     SIGNAL PC_Incremental : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL PC_RESET : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL Inst_Signal : STD_LOGIC_VECTOR(31 DOWNTO 0);
 BEGIN
+    inst <= Inst_Signal;
     --if PcSrc=0 select ReadData1 which is a register data, if PcSrc=1 select the incremented PC
     PC_OR_REG : Mux_2x1 PORT MAP(ReadData1, IncrementedPc, PcSrc, PC_RegFile_out);
     --if MemToPC=0 select PC_RegFile_out which is a register data or the incPc, if MemToPC=1 select the memory data
     MEM_To_PC : Mux_2x1 PORT MAP(PC_RegFile_out, MemData, MemToPC, InputPc);
     -- PC register
-    PC : PC_Register PORT MAP(clk, reset,"00000000000000000000000000000000",InputPc, OutputPC);
+    PC : PC_Register PORT MAP(clk, reset, PC_RESET, InputPc, OutputPC);
     --Instruction memory outputs the value in the location that PC points to
-    Mem : instRam PORT MAP(OutputPC, inst);
+    Mem : instRam PORT MAP(OutputPC, Inst_Signal, PC_RESET);
     --Detect the type of instruction to evaluate the right value of the next PC
-    Inst_Type_detector : instTypeDetector PORT MAP(inst(31 DOWNTO 27), PC_Incremental_sel);
+    Inst_Type_detector : instTypeDetector PORT MAP(Inst_Signal(31 DOWNTO 27), PC_Incremental_sel);
     --outputs 1 in case of 16 bit inst and 2 in case of 32 bit inst
     PC_Incremental_Mux : Mux_2x1 PORT MAP("00000000000000000000000000000001", "00000000000000000000000000000010", PC_Incremental_sel, PC_Incremental);
     --increment PC and outputs it to the IF-ID buffer
     PC_adder : Adder PORT MAP(PC_Incremental, OutputPC, IncrementedPc);
 END fetchStageArch;
-
-------------------------------TODO------------------------
---Update the component to make inst is only output not inout
---make the output inst goes to the instTypeDetection by a signal
---update the PC reset value to be the data in the first location in instMem

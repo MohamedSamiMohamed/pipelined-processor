@@ -1,5 +1,5 @@
 vsim work.fetchstage
-mem load -i /home/mohamedsamy/CMP_3rd/2nd/Arch/project/code/inst-mem.mem /fetchstage/Mem/RamArray
+mem load -i /home/mohamedsamy/CMP_3rd/2nd/Arch/project/code/assembler/inst-memory.mem /fetchstage/Mem/RamArray
 add wave -position insertpoint  \
 sim:/fetchstage/clk \
 sim:/fetchstage/reset \
@@ -13,7 +13,9 @@ sim:/fetchstage/PC_RegFile_out \
 sim:/fetchstage/InputPc \
 sim:/fetchstage/OutputPC \
 sim:/fetchstage/PC_Incremental_sel \
-sim:/fetchstage/PC_Incremental
+sim:/fetchstage/PC_Incremental \
+sim:/fetchstage/Inst_Signal \
+sim:/fetchstage/PC_RESET
 force -freeze sim:/fetchstage/clk 1 0, 0 {50 ps} -r 100
 force -freeze sim:/fetchstage/reset 1 0
 force -freeze sim:/fetchstage/MemToPC 0 0

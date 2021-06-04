@@ -11,7 +11,8 @@ ENTITY instRam IS
     );
     PORT (
         PC : IN STD_LOGIC_VECTOR(RamAddrWidth - 1 DOWNTO 0);
-        RamDataOut : OUT STD_LOGIC_VECTOR((2 * RamWidth) - 1 DOWNTO 0)
+        RamDataOut : OUT STD_LOGIC_VECTOR((2 * RamWidth) - 1 DOWNTO 0);
+        loc0: OUT STD_LOGIC_VECTOR((RamWidth) - 1 DOWNTO 0)
     );
 END ENTITY;
 
@@ -24,6 +25,5 @@ BEGIN
     -- The ram will write the lower cell --which contains the opCode-- on the most significant word 
     -- and the the higher cell --which contains opCode of the next instruction or the offset of the current instruction-- on the least significant word
     RamDataOut <= RamArray(to_integer(unsigned(PC))) & RamArray(to_integer(unsigned(PC) + 1));
+    loc0 <= RamArray(0);
 END instRamArch;
-------------------------------TODO------------------
---Update the component to output the data of MEM (0) to be inserted in the PC at RESET
