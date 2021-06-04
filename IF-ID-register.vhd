@@ -5,8 +5,8 @@ USE IEEE.numeric_std.ALL;
 ENTITY IF_ID_Register IS
     PORT (
         Clk, Rst : IN STD_LOGIC;
-        IncPc,FetchedInst: IN std_logic_vector(31 downto 0);
-        q : OUT STD_LOGIC_VECTOR(63 DOWNTO 0));
+        IncPc, FetchedInst : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        q : OUT STD_LOGIC_VECTOR(63 DOWNTO 0)); -- PC in the upper 32 bit, inst in the lower 32 bits
 END IF_ID_Register;
 ARCHITECTURE IF_ID_RegisterArch OF IF_ID_Register IS
 BEGIN
