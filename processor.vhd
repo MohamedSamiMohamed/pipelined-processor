@@ -4,9 +4,10 @@ USE IEEE.numeric_std.ALL;
 
 ENTITY CPU IS
     PORT (
-        Clk, Rst : IN STD_LOGIC;
+        Clk, Rst : IN STD_LOGIC
     );
 END ENTITY;
+
 ARCHITECTURE CPUArch OF CPU IS
 
     COMPONENT fetchStage IS
@@ -30,8 +31,8 @@ ARCHITECTURE CPUArch OF CPU IS
 
     SIGNAL IncrementedPc : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL inst : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    SIGNAL
+    
 BEGIN
-    fetchStage : fetchStage PORT MAP(Clk, Rst, MemToPC, MemData, PcSrc, ReadData1, IncrementedPc, inst);
-    IF_ID_Register : IF_ID_Register PORT MAP(Clk, Rst, IncrementedPc, inst, IF_ID_Out);
+    -- fetchStage : fetchStage PORT MAP(Clk, Rst, MemToPC, MemData, PcSrc, ReadData1, IncrementedPc, inst);
+    -- IF_ID_Register : IF_ID_Register PORT MAP(Clk, Rst, IncrementedPc, inst, IF_ID_Out);
 END CPUArch;

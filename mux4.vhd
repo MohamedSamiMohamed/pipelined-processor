@@ -3,14 +3,14 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 
 ENTITY Mux_4x1 IS
-Generic(n : INTEGER := 32);
+	GENERIC (n : INTEGER := 32);
 	PORT (
-		in_mux0 : IN STD_LOGIC_VECTOR (n-1 DOWNTO 0);
-		in_mux1 : IN STD_LOGIC_VECTOR (n-1 DOWNTO 0);
-		in_mux2 : IN STD_LOGIC_VECTOR (n-1 DOWNTO 0);
-		in_mux3 : IN STD_LOGIC_VECTOR (n-1 DOWNTO 0);
+		in_mux0 : IN STD_LOGIC_VECTOR (n - 1 DOWNTO 0);
+		in_mux1 : IN STD_LOGIC_VECTOR (n - 1 DOWNTO 0);
+		in_mux2 : IN STD_LOGIC_VECTOR (n - 1 DOWNTO 0);
+		in_mux3 : IN STD_LOGIC_VECTOR (n - 1 DOWNTO 0);
 		Sel : IN STD_LOGIC_VECTOR (1 DOWNTO 0);
-		out_mux : OUT STD_LOGIC_VECTOR (n-1 DOWNTO 0)
+		out_mux : OUT STD_LOGIC_VECTOR (n - 1 DOWNTO 0)
 	);
 END Mux_4x1;
 
@@ -23,7 +23,7 @@ BEGIN
 			WHEN "01" => out_mux <= in_mux1;
 			WHEN "10" => out_mux <= in_mux2;
 			WHEN "11" => out_mux <= in_mux3;
-			WHEN OTHERS => out_mux <= (others => '0') ;
+			WHEN OTHERS => out_mux <= (OTHERS => '0');
 		END CASE;
 	END PROCESS;
 END Mux4_arch;
