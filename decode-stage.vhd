@@ -90,8 +90,8 @@ begin
 CUnit : control_unit PORT MAP (rst,NopEn,OpCode,CU_Signals); 
 Register_file :Reg_file GENERIC MAP (n) PORT MAP (rst,clk,Rsrc_code_in,Rdst_code_in,CU_Signals(18),CU_Signals(17),CU_Signals(15),Read_Data1,Read_Data2,CU_Signals(16),CU_Signals(14),Write_Reg,WriteData);
 
-process(CLK)
-begin
+-- process(CLK)
+-- begin
 	CU_signals_EX(5 downto 2) <= CU_Signals(12 downto 9);
 	CU_signals_EX(1) <= CU_Signals(13);
 	CU_signals_EX(0) <= CU_Signals(0);
@@ -108,5 +108,5 @@ begin
 	Rsrc_code_out <= Rsrc_code_in;
 	Rdst_code_out <= Rdst_code_in;
 	Offset_imm_out <= Offset_imm_in; 
-end process;
+-- end process;
 end Architecture;
