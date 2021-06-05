@@ -131,5 +131,5 @@ BEGIN
     ---------------------------------------------------------------------------
     ---------------------------------------DECODING UNIT-----------------------
     ---------------------------------------------------------------------------
-    ID_EX : ID_EX_Buffer port map(Clk,Rst,WB_signals,MEM_Signals,ReadData1,ReadData2,Inst(15 DOWNTO 0))
+    ID_EX : ID_EX_Buffer port map(Clk,Rst,WB_signals,MEM_Signals,ReadData1,ReadData2,Inst(15 DOWNTO 0));
 END CPUArch;

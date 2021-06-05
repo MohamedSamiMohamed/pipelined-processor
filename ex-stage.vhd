@@ -60,18 +60,20 @@ ARCHITECTURE Excution OF EX_Stage IS
 	-------------------------------------signals----------------------------------------
 	SIGNAL data_in1, data_in2_mux, data_in2, result_out : STD_LOGIC_VECTOR (31 DOWNTO 0);
 	SIGNAL ccr_in : STD_LOGIC_VECTOR (2 DOWNTO 0);
-	SIGNAL c_o, n_o, z_o : STD_LOGIC;
+	SIGNAL c_o, n_o, z_o , pcSRC_out : STD_LOGIC;
 	--------------------------------------------------------------------------------
 BEGIN
 	mux1 : Mux_4x1 GENERIC MAP(32) PORT MAP(read_data1, ex_mem_data, mem_wb_data, (OTHERS => '0'), forward_in1, data_in1);
 	mux2 : Mux_4x1 GENERIC MAP(32) PORT MAP(read_data2, ex_mem_data, mem_wb_data, (OTHERS => '0'), forward_in2, data_in2_mux);
 	mux4 : Mux_2x1 PORT MAP(data_in2_mux, immediate, take_immediate, data_in2);
-	alu_o : alu PORT MAP(data_in1, data_in2, alu_op, ccr, CLK, result, c_o, n_o, z_o);
-	alu_o : alu PORT MAP(opCode, n_o, z_o, c_o, pcSrc);
+	alu_o : alu PORT MAP(data_in1, data_in2, alu_op, ccr, CLK, result_out, c_o, n_o, z_o);
+	branch_detection : branchDetection PORT MAP(opCode, n_o, z_o, c_o, pcSRC_out);
 	PROCESS (CLK)
 	BEGIN
+                result <= result_out;
 		ccr_out(0) <= c_o;
 		ccr_out(1) <= n_o;
 		ccr_out(2) <= z_o;
+                pcSrc <= pcSRC_out;
 	END PROCESS;
 END ARCHITECTURE;
