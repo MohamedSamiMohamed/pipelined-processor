@@ -15,7 +15,8 @@ ENTITY ID_EX_Buffer IS
         RsrcCode : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         RdstCode : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         incrementedPc : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        q : OUT STD_LOGIC_VECTOR(132 DOWNTO 0));
+        Ret : IN STD_LOGIC;
+        q : OUT STD_LOGIC_VECTOR(133 DOWNTO 0));
 END MEM_WB_Buffer;
 ARCHITECTURE MEM_WB_BufferArch OF MEM_WB_Buffer IS
 BEGIN
@@ -24,6 +25,7 @@ BEGIN
         IF Rst = '1' THEN
             q <= (OTHERS => '0');
         ELSIF falling_edge(Clk) THEN
+            q(133) <= Ret;
             q(132 DOWNTO 130) <= WB_Signals;
             q(129 DOWNTO 123) <= MEM_Signals;
             q(122 DOWNTO 91) <= ReadData1;
