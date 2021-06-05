@@ -66,10 +66,11 @@ ARCHITECTURE CPUArch OF CPU IS
             WrittenData : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
         );
     END COMPONENT;
-    SIGNAL IncrementedPc : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    SIGNAL inst : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL IncrementedPcSignal : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL instSignal : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL IF_IF_Out : STD_LOGIC_VECTOR(63 DOWNTO 0);
 BEGIN
-    fetchStage : fetchStage PORT MAP(Clk, Rst, MemToPC, MemData, PcSrc, ReadData1, IncrementedPc, inst);
-    IF_ID_Register : IF_ID_Register PORT MAP(Clk, Rst, IncrementedPc, inst, IF_ID_Out);
+    fetch : fetchStage PORT MAP(Clk, Rst, MemToPC, MemData, PcSrc, ReadData1, IncrementedPcSignal, instSignal);
+    IF_ID : IF_ID_Register PORT MAP(Clk, Rst, IncrementedPcSignal, instSignal, IF_ID_Out);
 
 END CPUArch;
