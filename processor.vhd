@@ -11,16 +11,17 @@ ARCHITECTURE CPUArch OF CPU IS
     -------------------------------------------------FETCH STAGE--------------------------------------------------
 
     COMPONENT fetchStage IS
-        PORT (
-            clk : IN STD_LOGIC;
-            reset : IN STD_LOGIC;
-            MemToPC : IN STD_LOGIC;
-            MemData : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-            PcSrc : IN STD_LOGIC;
-            ReadData1 : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-            IncrementedPc : INOUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-            inst : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
-        );
+    PORT (
+        clk : IN STD_LOGIC;
+        reset : IN STD_LOGIC;
+        MemToPC : IN STD_LOGIC;
+        MemData : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        PcSrc : IN STD_LOGIC;
+        ReadData1 : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        IncrementedPcIn : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        IncrementedPcOut : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+        inst : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
+    );
     END COMPONENT;
     -------------------------------------------------ID/ID BUFFER--------------------------------------------------
     COMPONENT IF_ID_Register IS
@@ -150,31 +151,41 @@ ARCHITECTURE CPUArch OF CPU IS
     signal RsrcCode: std_logic_vector(2 downto 0);
     signal RdstCode: std_logic_vector(2 downto 0);
     signal Ret : std_logic ;
-    signal ID_EX_Q : std_logic_vector(133 downto 0);
+    signal ID_EX_Q : std_logic_vector(154 downto 0);
     ---------------------------------------------------
-    signal MemWbData : std_logic_vector(31 downto 0); -- will be replaced
+    signal MemWbData : std_logic_vector(31 downto 0); 
     signal ExResult : std_logic_vector(31 downto 0);
     signal EX_MEM_Q : std_logic_vector(108 downto 0);
     ----------------------------------------------------
-    signal WB_WriteData : std_logic_vector(31 downto 0); -- will be replaced
+    signal WB_WriteData : std_logic_vector(31 downto 0); 
+    signal MemDataRead  : std_logic_vector(31 downto 0);
+    signal MEM_WB_Q : std_logic_vector(69 downto 0);
+    signal offset_imm_in_signal : std_logic_vector(31 downto 0);
 
+    
     
     ------------------------------------------------------------------------------------------------------------------
 BEGIN
-    fetch : fetchStage PORT MAP(Clk, Rst, MemToPc, MemData, PcSrc, ReadData1, IncrementedPc, Inst);
+    offset_imm_in_signal <= (31 downto 16 => IF_ID_Out(15)) & IF_ID_Out(15 downto 0);
+    fetch : fetchStage PORT MAP(Clk, Rst, EX_MEM_Q(4), MemDataRead, PcSrc, ReadData1, IF_ID_Out(63 downto 32) ,IncrementedPc, Inst);
     IF_ID : IF_ID_Register PORT MAP(Clk, Rst, IncrementedPc, Inst, IF_ID_Out);
     ---------------------------------------------------------------------------
     ---------------------------------------DECODING UNIT-----------------------
     ---------------------------------------------------------------------------
-    Decode : DECODE_Stage port map (Rst,Clk,'0',IF_ID_Out(31 downto 27),IF_ID_Out(26 downto 24),IF_ID_Out(23 downto 21),WB_WriteData,IF_ID_Out(23 downto 21),(31 downto 16 => IF_ID_Out(15)) & IF_ID_Out(15 downto 0),IF_ID_Out(63 downto 32),ReadData1,ReadData2,offset_imm,EX_signals,MemWbSignals,RsrcCode,RdstCode,IncreamentedPcDecode);
+    Decode : DECODE_Stage port map (Rst,Clk,'0',IF_ID_Out(31 downto 27),IF_ID_Out(26 downto 24),IF_ID_Out(23 downto 21),WB_WriteData,IF_ID_Out(23 downto 21),offset_imm_in_signal,IF_ID_Out(63 downto 32),ReadData1,ReadData2,offset_imm,EX_signals,MemWbSignals,RsrcCode,RdstCode,IncreamentedPcDecode);
     ID_EX : ID_EX_Buffer port map(Clk,Rst,MemWbSignals(9 downto 7),MemWbSignals(6 downto 0),ReadData1,ReadData2,offset_imm,EX_signals(5 downto 2),EX_signals(1),RsrcCode,RdstCode,IncreamentedPcDecode,EX_signals(0),IF_ID_Out(31 downto 27),ID_EX_Q);
     ---------------------------------------------------------------------------
     ---------------------------------------EXCUTION UNIT-----------------------
     ---------------------------------------------------------------------------
-    excute : EX_Stage port map (EX_MEM_Q(108 downto 77),MemWbData,ID_EX_Q(138 DOWNTO 107),ID_EX_Q(106 DOWNTO 75),ID_EX_Q(74 DOWNTO 43),"00","00",ID_EX_Q(42 DOWNTO 39),ID_EX_Q(154 downto 150),ID_EX_Q(38),Clk,Rst,ExResult,PcSrc);
-    EX_MEM : ExMemBuffer port map (ExResult,ID_EX_Q(90 DOWNTO 59),ID_EX_Q(31 DOWNTO 0),ID_EX_Q(34 DOWNTO 32),ID_EX_Q(129 DOWNTO 123),ID_EX_Q(132 DOWNTO 130),EX_MEM_Q);
+    excute : EX_Stage port map (EX_MEM_Q(108 downto 77),WB_WriteData,ID_EX_Q(138 DOWNTO 107),ID_EX_Q(106 DOWNTO 75),ID_EX_Q(74 DOWNTO 43),"00","00",ID_EX_Q(42 DOWNTO 39),ID_EX_Q(154 downto 150),ID_EX_Q(38),Clk,Rst,ExResult,PcSrc); -- check second input for forwarding
+    EX_MEM : ExMemBuffer port map (ExResult,ID_EX_Q(106 DOWNTO 75),ID_EX_Q(31 DOWNTO 0),ID_EX_Q(34 DOWNTO 32),ID_EX_Q(145 DOWNTO 139),ID_EX_Q(148 DOWNTO 146),EX_MEM_Q);
     ---------------------------------------------------------------------------
     ---------------------------------------MEMORY UNIT-----------------------
     ---------------------------------------------------------------------------
-    --memory : memStage port map (Clk,Rst,);
+    memory : memStage port map (Clk,Rst,EX_MEM_Q(8),EX_MEM_Q(9),EX_MEM_Q(3),EX_MEM_Q(7),EX_MEM_Q(6 downto 5),EX_MEM_Q(44 downto 13),EX_MEM_Q(76 downto 45),EX_MEM_Q(108 downto 77),EX_MEM_Q(4),EX_MEM_Q(12 downto 10),EX_MEM_Q(2 downto 0),MemDataRead);
+    MEM_WB : MEM_WB_Buffer port map (Clk,Rst,EX_MEM_Q(2 downto 0),MemDataRead,EX_MEM_Q(108 downto 77),EX_MEM_Q(12 downto 10),MEM_WB_Q);
+    ---------------------------------------------------------------------------
+    ---------------------------------------WRITE BACK UNIT-----------------------
+    ---------------------------------------------------------------------------
+    writeBack : wbStage port map (Clk,Rst,MEM_WB_Q(67),MEM_WB_Q(69),MEM_WB_Q(68),MEM_WB_Q(66 downto 35),MEM_WB_Q(34 downto 3),MEM_WB_Q(2 downto 0),WB_WriteData);
 END CPUArch;

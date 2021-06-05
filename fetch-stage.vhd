@@ -12,7 +12,8 @@ ENTITY fetchStage IS
         MemData : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         PcSrc : IN STD_LOGIC;
         ReadData1 : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        IncrementedPc : INOUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+        IncrementedPcIn : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        IncrementedPcOut : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
         inst : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
     );
 END ENTITY;
@@ -69,7 +70,7 @@ ARCHITECTURE fetchStageArch OF fetchStage IS
 BEGIN
     inst <= Inst_Signal;
     --if PcSrc=0 select ReadData1 which is a register data, if PcSrc=1 select the incremented PC
-    PC_OR_REG : Mux_2x1 PORT MAP(ReadData1, IncrementedPc, PcSrc, PC_RegFile_out);
+    PC_OR_REG : Mux_2x1 PORT MAP(ReadData1, IncrementedPcIn, PcSrc, PC_RegFile_out);
     --if MemToPC=0 select PC_RegFile_out which is a register data or the incPc, if MemToPC=1 select the memory data
     MEM_To_PC : Mux_2x1 PORT MAP(PC_RegFile_out, MemData, MemToPC, InputPc);
     -- PC register
@@ -81,5 +82,5 @@ BEGIN
     --outputs 1 in case of 16 bit inst and 2 in case of 32 bit inst
     PC_Incremental_Mux : Mux_2x1 PORT MAP("00000000000000000000000000000001", "00000000000000000000000000000010", PC_Incremental_sel, PC_Incremental);
     --increment PC and outputs it to the IF-ID buffer
-    PC_adder : Adder PORT MAP(PC_Incremental, OutputPC, IncrementedPc);
+    PC_adder : Adder PORT MAP(PC_Incremental, OutputPC, IncrementedPcOut);
 END fetchStageArch;
