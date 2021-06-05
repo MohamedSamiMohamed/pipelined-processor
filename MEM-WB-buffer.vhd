@@ -5,11 +5,11 @@ USE IEEE.numeric_std.ALL;
 ENTITY MEM_WB_Buffer IS
     PORT (
         Clk, Rst : IN STD_LOGIC;
-        WB_Signals : In std_logic_vector(2 downto 0); --MemToReg , WriteRegEnable, WriteOutportEnable
-        MemData: In std_logic_vector(31 downto 0);
-        result : in std_logic_vector(31 downto 0);
-        RdstCode : in std_logic_vector(2 downto 0);
-        q : OUT STD_LOGIC_VECTOR(69 DOWNTO 0)); 
+        WB_Signals : IN STD_LOGIC_VECTOR(2 DOWNTO 0); --MemToReg , WriteRegEnable, WriteOutportEnable
+        MemData : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        result : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        RdstCode : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+        q : OUT STD_LOGIC_VECTOR(69 DOWNTO 0));
 END MEM_WB_Buffer;
 ARCHITECTURE MEM_WB_BufferArch OF MEM_WB_Buffer IS
 BEGIN

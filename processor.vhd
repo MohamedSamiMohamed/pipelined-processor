@@ -72,5 +72,5 @@ ARCHITECTURE CPUArch OF CPU IS
 BEGIN
     fetch : fetchStage PORT MAP(Clk, Rst, MemToPC, MemData, PcSrc, ReadData1, IncrementedPcSignal, instSignal);
     IF_ID : IF_ID_Register PORT MAP(Clk, Rst, IncrementedPcSignal, instSignal, IF_ID_Out);
-
+    mem : memStage()
 END CPUArch;
