@@ -7,9 +7,11 @@ ex_mem_data , mem_wb_data , read_data1, read_data2 , immediate : in std_logic_ve
 forward_in1,forward_in2 : in std_logic_vector(1 DOWNTO 0);
 ccr : in std_logic_vector(2 DOWNTO 0);
 alu_op : in std_logic_vector(3 DOWNTO 0);
+opCode : in std_logic_vector(4 DOWNTO 0);
 take_immediate , CLK: in std_logic;
 ccr_out : out std_logic_vector(2 DOWNTO 0);
-result : out std_logic_vector(31 DOWNTO 0)
+result : out std_logic_vector(31 DOWNTO 0);
+pcSrc : out std_logic 
 );
 
 end entity;
@@ -49,6 +51,14 @@ component Mux_2x1 IS
 		out_mux : OUT STD_LOGIC_VECTOR (31 DOWNTO 0)
 	);
 end Component ;
+------------------------------------------------------------------------------------
+Component branchDetection IS
+    PORT (
+        OpCode : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+        N, Z, C : IN STD_LOGIC;
+        PcSrc : OUT STD_LOGIC
+    );
+END Component;
 -------------------------------------signals----------------------------------------
 signal data_in1, data_in2_mux , data_in2 , result_out : STD_LOGIC_VECTOR (31 DOWNTO 0);
 signal ccr_in : STD_LOGIC_VECTOR (2 DOWNTO 0);
@@ -58,11 +68,12 @@ begin
 mux1 :Mux_4x1 GENERIC MAP (32) PORT MAP (read_data1,ex_mem_data,mem_wb_data,(others => '0'),forward_in1,data_in1); 
 mux2 :Mux_4x1 GENERIC MAP (32) PORT MAP (read_data2,ex_mem_data,mem_wb_data,(others => '0'),forward_in2,data_in2_mux); 
 mux4: Mux_2x1 PORT MAP (data_in2_mux,immediate,take_immediate,data_in2);
-alu_o:alu PORT MAP (data_in1,data_in2,alu_op,ccr,CLK,result_out,c_o,n_o,z_o); 
+alu_o:alu PORT MAP (data_in1,data_in2,alu_op,ccr,CLK,result,c_o,n_o,z_o); 
+alu_o:alu PORT MAP (opCode,n_o,z_o,c_o,pcSrc); 
+
 
 process(CLK)
 begin
-result <= result_out;
 ccr_out(0) <= c_o;
 ccr_out(1) <= n_o;
 ccr_out(2) <= z_o;
