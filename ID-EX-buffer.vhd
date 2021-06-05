@@ -17,8 +17,8 @@ ENTITY ID_EX_Buffer IS
         incrementedPc : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         Ret : IN STD_LOGIC;
         q : OUT STD_LOGIC_VECTOR(133 DOWNTO 0));
-END MEM_WB_Buffer;
-ARCHITECTURE MEM_WB_BufferArch OF MEM_WB_Buffer IS
+END ID_EX_Buffer;
+ARCHITECTURE ID_EX_BufferArch OF ID_EX_Buffer IS
 BEGIN
     PROCESS (Clk, Rst)
     BEGIN
@@ -38,4 +38,4 @@ BEGIN
             q(31 DOWNTO 0) <= incrementedPc;
         END IF;
     END PROCESS;
-END MEM_WB_BufferArch;
+END ID_EX_BufferArch;
