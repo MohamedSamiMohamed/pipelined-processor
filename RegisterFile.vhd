@@ -125,7 +125,7 @@ MUX_ReadReg2: Mux_8x1 port map (output_reg0,output_reg1,output_reg2,output_reg3,
 
 MUX_ReadReg1_en: Mux_2x1 port map ((Others => '0'), outMUX_ReadReg1, Read_Reg1_en, outMUX_ReadReg1_en);
 MUX_ReadReg2_en: Mux_2x1 port map ((Others => '0'), outMUX_ReadReg2, Read_Reg2_en, Read_Data2);
-MUX_ReadInPort_en: Mux_2x1 port map (InPort, outMUX_ReadReg1_en, Read_InPort_en, Read_Data1);
+MUX_ReadInPort_en: Mux_2x1 port map (outMUX_ReadReg1_en,InPort, Read_InPort_en, Read_Data1);
 
 END Reg_fileArch;
 
