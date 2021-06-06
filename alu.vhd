@@ -37,7 +37,7 @@ END COMPONENT;
 Signal com1 , com2 , in12 , in1_2, in11 , in1_1: std_logic_vector(31 Downto 0);
 Signal c12,c1_2,c11,c1_1 : std_logic ;
 
-signal resl,resr,resrl,resrr : std_logic_vector(31 downto 0) ;
+-- signal resl,resr,resrl,resrr : std_logic_vector(31 downto 0) ;
 begin
 ----------------------------------------------------------
 
@@ -57,7 +57,7 @@ one_Two: n_adder  GENERIC MAP (32) PORT MAP (in1,com2,'0',in1_2,c1_2);
 oneOne: n_adder  GENERIC MAP (32) PORT MAP (in1,(others => '0'),'1',in11,c11);
 one_One: n_adder  GENERIC MAP (32) PORT MAP (in1,(others => '1'),'0',in1_1,c1_1);
 ----------------------------------------------------------
-process(in1,in2,operation,CLK)
+process(in1,in2,operation)
 variable in2i : integer ;
 variable res : std_logic_vector(31 downto 0);
 begin

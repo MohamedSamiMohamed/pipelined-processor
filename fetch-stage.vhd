@@ -11,6 +11,7 @@ ENTITY fetchStage IS
         PcSrc : IN STD_LOGIC;
         ReadData1 : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         IncrementedPcIn : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        PC_stall : IN STD_LOGIC;
         IncrementedPcOut : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
         inst : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
     );
@@ -50,6 +51,7 @@ ARCHITECTURE fetchStageArch OF fetchStage IS
             Clk, Rst : IN STD_LOGIC;
             ResetValue : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
             d : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+            stall : IN STD_LOGIC;
             q : OUT STD_LOGIC_VECTOR(31 DOWNTO 0));
     END COMPONENT;
     COMPONENT Adder IS
@@ -72,7 +74,7 @@ BEGIN
     --if MemToPC=0 select PC_RegFile_out which is a register data or the incPc, if MemToPC=1 select the memory data
     MEM_To_PC : Mux_2x1 PORT MAP(PC_RegFile_out, MemData, MemToPC, InputPc);
     -- PC register
-    PC : PC_Register PORT MAP(clk, reset, PC_RESET, InputPc, OutputPC);
+    PC : PC_Register PORT MAP(clk, reset, PC_RESET, InputPc, PC_stall, OutputPC);
     --Instruction memory outputs the value in the location that PC points to
     Mem : instRam PORT MAP(OutputPC, Inst_Signal, PC_RESET);
     --Detect the type of instruction to evaluate the right value of the next PC
