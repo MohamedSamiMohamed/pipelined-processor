@@ -167,9 +167,9 @@ ARCHITECTURE CPUArch OF CPU IS
     ------------------------------------------------------------------------------------------------------------------
 BEGIN
     offset_imm_in_signal <= (31 downto 16 => IF_ID_Out(15)) & IF_ID_Out(15 downto 0);
-    -- fetch : fetchStage PORT MAP(Clk, Rst, EX_MEM_Q(4), MemDataRead, PcSrc, ReadData1, IF_ID_Out(63 downto 32) ,IncrementedPc, Inst);
+    fetch : fetchStage PORT MAP(Clk, Rst, EX_MEM_Q(4), MemDataRead, PcSrc, ReadData1, IF_ID_Out(63 downto 32) ,IncrementedPc, Inst);
         ------------------------------------------FETCH FOR TEST----------------------------------------
-    fetch : fetchStage PORT MAP(Clk, Rst,'0', MemDataRead, '0', ReadData1, IF_ID_Out(63 downto 32) ,IncrementedPc, Inst);
+    -- fetch : fetchStage PORT MAP(Clk, Rst,'0', MemDataRead, '0', ReadData1, IF_ID_Out(63 downto 32) ,IncrementedPc, Inst);
     IF_ID : IF_ID_Register PORT MAP(Clk, Rst, IncrementedPc, Inst, IF_ID_Out);
     ---------------------------------------------------------------------------
     ---------------------------------------DECODING UNIT-----------------------
@@ -181,9 +181,9 @@ BEGIN
     -- ---------------------------------------------------------------------------
     -- ---------------------------------------EXCUTION UNIT-----------------------
     -- ---------------------------------------------------------------------------
-    -- excute : EX_Stage port map (EX_MEM_Q(108 downto 77),WB_WriteData,ID_EX_Q(138 DOWNTO 107),ID_EX_Q(106 DOWNTO 75),ID_EX_Q(74 DOWNTO 43),"00","00",ID_EX_Q(42 DOWNTO 39),ID_EX_Q(154 downto 150),ID_EX_Q(38),Clk,Rst,ExResult,PcSrc); -- check second input for forwarding
+    -- excute : EX_Stage port map (EX_MEM_Q(108 downto 77),WB_WriteData,ID_EX_Q(138 DOWNTO 107),ID_EX_Q(106 DOWNTO 75),ID_EX_Q(74 DOWNTO 43),"00","00",ID_EX_Q(42 DOWNTO 39),ID_EX_Q(154 downto 150),ID_EX_Q(38),Clk,Rst,ExResult,PcSrc); 
     --------------------------------------------EXECUTE UNDER TEST----------------------------------
-    excute : EX_Stage port map (EX_MEM_Q(108 downto 77),WB_WriteData,ID_EX_Q(138 DOWNTO 107),ID_EX_Q(106 DOWNTO 75),ID_EX_Q(74 DOWNTO 43),"00","00",ID_EX_Q(42 DOWNTO 39),ID_EX_Q(154 downto 150),ID_EX_Q(38),Clk,Rst,ExResult,PcSrc); -- check second input for forwarding
+    excute : EX_Stage port map (EX_MEM_Q(108 downto 77),"00000000000000000000000000000000",ID_EX_Q(138 DOWNTO 107),ID_EX_Q(106 DOWNTO 75),ID_EX_Q(74 DOWNTO 43),"00","00",ID_EX_Q(42 DOWNTO 39),ID_EX_Q(154 downto 150),ID_EX_Q(38),Clk,Rst,ExResult,PcSrc); 
     EX_MEM : ExMemBuffer port map (ExResult,ID_EX_Q(106 DOWNTO 75),ID_EX_Q(31 DOWNTO 0),ID_EX_Q(34 DOWNTO 32),ID_EX_Q(145 DOWNTO 139),ID_EX_Q(148 DOWNTO 146),EX_MEM_Q);
     -- ---------------------------------------------------------------------------
     -- ---------------------------------------MEMORY UNIT-----------------------
