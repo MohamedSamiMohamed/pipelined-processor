@@ -1,117 +1,115 @@
 LIBRARY IEEE;
-USE IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
+USE IEEE.std_logic_1164.ALL;
+USE IEEE.numeric_std.ALL;
 
-entity control_unit is
-port(	
-  	reset,NopEn: in std_logic;
-	OpCode: in std_logic_vector(4 downto 0);
-	
-	--Control signals
-	CU_Signals: out std_logic_vector(18 downto 0)
-	
-	--[18] Read1
-	--[17] Read2
-	--[16] WriteReg
-	--[15] Read in port 
-	--[14] Write out port
-	--[13] Take immediate
-	--[12:9] Alu Op.
-	--[8] Mem Read
-	--[7] Mem write
-	--[6] Mem address src (sp or address)
-	--[5] Mem to Reg  
-	--[4:3] SP Operation (INC/DEC/NOP) 
-	--[2] Mem to PC
-	--[1] Pc to Mem
-	--[0] RET
-  
-);
-end entity;
+ENTITY control_unit IS
+	PORT (
+		reset, NopEn : IN STD_LOGIC;
+		OpCode : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
 
-architecture Control_Unit_arch of control_unit is
-begin
-process (OpCode,reset)
+		--Control signals
+		CU_Signals : OUT STD_LOGIC_VECTOR(18 DOWNTO 0)
 
-constant NOP   : std_logic_vector(4 downto 0) := "00000";
-constant SETC  : std_logic_vector(4 downto 0) := "00001";
-constant CLRC  : std_logic_vector(4 downto 0) := "00010";
-constant CLR   : std_logic_vector(4 downto 0) := "00011";
-constant NotDst: std_logic_vector(4 downto 0) := "00100";
-constant INC   : std_logic_vector(4 downto 0) := "00101";
-constant DEC   : std_logic_vector(4 downto 0) := "00110";
-constant NEG   : std_logic_vector(4 downto 0) := "00111";
-constant OutDst: std_logic_vector(4 downto 0) := "01000";
-constant InDst : std_logic_vector(4 downto 0) := "01001";
-constant RLC   : std_logic_vector(4 downto 0) := "01010";
-constant Rrc   : std_logic_vector(4 downto 0) := "01011";
-constant MOV   : std_logic_vector(4 downto 0) := "01100";
-constant ADD   : std_logic_vector(4 downto 0) := "01101";
-constant SUB   : std_logic_vector(4 downto 0) := "01110";
-constant AND_OP: std_logic_vector(4 downto 0) := "01111";
-constant OR_OP : std_logic_vector(4 downto 0) := "10000";
-constant Iadd  : std_logic_vector(4 downto 0) := "10001";
-constant Shl   : std_logic_vector(4 downto 0) := "10010";
-constant Shr   : std_logic_vector(4 downto 0) := "10011";
-constant PUSH  : std_logic_vector(4 downto 0) := "10100";
-constant POP   : std_logic_vector(4 downto 0) := "10101";
-constant Ldm   : std_logic_vector(4 downto 0) := "10110";
-constant Ldd   : std_logic_vector(4 downto 0) := "10111";
-constant Std   : std_logic_vector(4 downto 0) := "11000";
-constant Jz    : std_logic_vector(4 downto 0) := "11001";
-constant Jn    : std_logic_vector(4 downto 0) := "11010";
-constant Jc    : std_logic_vector(4 downto 0) := "11011";
-constant JMP   : std_logic_vector(4 downto 0) := "11100";
-constant CALL  : std_logic_vector(4 downto 0) := "11101";
-constant RET   : std_logic_vector(4 downto 0) := "11110";
-constant DECSP : std_logic_vector(4 downto 0) := "11111";
+		--[18] Read1
+		--[17] Read2
+		--[16] WriteReg
+		--[15] Read in port 
+		--[14] Write out port
+		--[13] Take immediate
+		--[12:9] Alu Op.
+		--[8] Mem Read
+		--[7] Mem write
+		--[6] Mem address src (sp or address)
+		--[5] Mem to Reg  
+		--[4:3] SP Operation (INC/DEC/NOP) 
+		--[2] Mem to PC
+		--[1] Pc to Mem
+		--[0] RET
 
-begin
-	if (reset ='1')then
-		-- Initialization
-		CU_Signals <= "0000000000000000000";
-	elsif (NopEn ='1')then
-		-- NOPen
-		CU_Signals <= "000000XXXX00XX00000";
-	else
-	case Opcode is
-    		when NOP    => CU_Signals <= "000000XXXX00XX00000";
-    		when SETC   => CU_Signals <= "000000111100XX00000";
-    		when CLRC   => CU_Signals <= "000000010100XX00000";
-    		when CLR    => CU_Signals <= "101000000000X000000";
-    		when NotDst => CU_Signals <= "101000000100X000000";
-    		when INC    => CU_Signals <= "101000001000X000000";
-    		when DEC    => CU_Signals <= "101000001100X000000";
-    		when NEG    => CU_Signals <= "101000010000X000000";
-    		when OutDst => CU_Signals <= "100010110100X000000";
-    		when InDst  => CU_Signals <= "001100110100X000000";
-    		when RLC    => CU_Signals <= "101000101100X000000";
-    		when Rrc    => CU_Signals <= "101000110000X000000";
-    		when MOV    => CU_Signals <= "101000110100X000000";
-    		when ADD    => CU_Signals <= "111000010100X000000";
-    		when SUB    => CU_Signals <= "111000011000X000000";
-    		when AND_OP => CU_Signals <= "111000011100X000000";
-    		when OR_OP  => CU_Signals <= "111000100000X000000";
-    		when Iadd   => CU_Signals <= "101001010100X000000";
-    		when Shl    => CU_Signals <= "101001100100X000000";
-    		when Shr    => CU_Signals <= "101001101000X000000";
-    		when PUSH   => CU_Signals <= "0100001101010000000";
-    		when POP    => CU_Signals <= "0010001101100110000";
-    		when Ldm    => CU_Signals <= "001001111000X000000";
-    		when Ldd    => CU_Signals <= "1010010101101100000";
-    		when Std    => CU_Signals <= "1100010101011000000";
-    		when Jz     => CU_Signals <= "100000XXXX00X000000";
-    		when Jn     => CU_Signals <= "100000XXXX00X000000";
-    		when Jc     => CU_Signals <= "100000XXXX00X000000";
-    		when JMP    => CU_Signals <= "100000XXXX00X000000";
-    		when CALL   => CU_Signals <= "000000XXXX010000010";
-    		when RET    => CU_Signals <= "000000XXXX100010101";
-    		when DECSP 	=> CU_Signals <= "000000XXXX00X001000";
-    		when others => CU_Signals <= "XXXXXXXXXXXXXXXXXXX";
-	end case;
-	end if;
-    
-end process;
-end architecture;
+	);
+END ENTITY;
 
+ARCHITECTURE Control_Unit_arch OF control_unit IS
+BEGIN
+	PROCESS (OpCode, reset)
 
+		CONSTANT NOP : STD_LOGIC_VECTOR(4 DOWNTO 0) := "00000";
+		CONSTANT SETC : STD_LOGIC_VECTOR(4 DOWNTO 0) := "00001";
+		CONSTANT CLRC : STD_LOGIC_VECTOR(4 DOWNTO 0) := "00010";
+		CONSTANT CLR : STD_LOGIC_VECTOR(4 DOWNTO 0) := "00011";
+		CONSTANT NotDst : STD_LOGIC_VECTOR(4 DOWNTO 0) := "00100";
+		CONSTANT INC : STD_LOGIC_VECTOR(4 DOWNTO 0) := "00101";
+		CONSTANT DEC : STD_LOGIC_VECTOR(4 DOWNTO 0) := "00110";
+		CONSTANT NEG : STD_LOGIC_VECTOR(4 DOWNTO 0) := "00111";
+		CONSTANT OutDst : STD_LOGIC_VECTOR(4 DOWNTO 0) := "01000";
+		CONSTANT InDst : STD_LOGIC_VECTOR(4 DOWNTO 0) := "01001";
+		CONSTANT MOV : STD_LOGIC_VECTOR(4 DOWNTO 0) := "01010";
+		CONSTANT ADD : STD_LOGIC_VECTOR(4 DOWNTO 0) := "01011";
+		CONSTANT SUB : STD_LOGIC_VECTOR(4 DOWNTO 0) := "01100";
+		CONSTANT AND_OP : STD_LOGIC_VECTOR(4 DOWNTO 0) := "01101";
+		CONSTANT OR_OP : STD_LOGIC_VECTOR(4 DOWNTO 0) := "01110";
+		CONSTANT Iadd : STD_LOGIC_VECTOR(4 DOWNTO 0) := "01111";
+		CONSTANT Shl : STD_LOGIC_VECTOR(4 DOWNTO 0) := "10000";
+		CONSTANT Shr : STD_LOGIC_VECTOR(4 DOWNTO 0) := "10001";
+		CONSTANT RLC : STD_LOGIC_VECTOR(4 DOWNTO 0) := "10010";
+		CONSTANT Rrc : STD_LOGIC_VECTOR(4 DOWNTO 0) := "10011";
+		CONSTANT PUSH : STD_LOGIC_VECTOR(4 DOWNTO 0) := "10100";
+		CONSTANT POP : STD_LOGIC_VECTOR(4 DOWNTO 0) := "10101";
+		CONSTANT Ldm : STD_LOGIC_VECTOR(4 DOWNTO 0) := "10110";
+		CONSTANT Ldd : STD_LOGIC_VECTOR(4 DOWNTO 0) := "10111";
+		CONSTANT Std : STD_LOGIC_VECTOR(4 DOWNTO 0) := "11000";
+		CONSTANT Jz : STD_LOGIC_VECTOR(4 DOWNTO 0) := "11001";
+		CONSTANT Jn : STD_LOGIC_VECTOR(4 DOWNTO 0) := "11010";
+		CONSTANT Jc : STD_LOGIC_VECTOR(4 DOWNTO 0) := "11011";
+		CONSTANT JMP : STD_LOGIC_VECTOR(4 DOWNTO 0) := "11100";
+		CONSTANT CALL : STD_LOGIC_VECTOR(4 DOWNTO 0) := "11101";
+		CONSTANT RET : STD_LOGIC_VECTOR(4 DOWNTO 0) := "11110";
+		CONSTANT DECSP : STD_LOGIC_VECTOR(4 DOWNTO 0) := "11111";
+
+	BEGIN
+		IF (reset = '1') THEN
+			-- Initialization
+			CU_Signals <= "0000000000000000000";
+		ELSIF (NopEn = '1') THEN
+			-- NOPen
+			CU_Signals <= "000000XXXX00XX00000";
+		ELSE
+			CASE Opcode IS
+				WHEN NOP => CU_Signals <= "000000XXXX00XX00000";
+				WHEN SETC => CU_Signals <= "000000111100XX00000";
+				WHEN CLRC => CU_Signals <= "000000010100XX00000";
+				WHEN CLR => CU_Signals <= "101000000000X000000";
+				WHEN NotDst => CU_Signals <= "101000000100X000000";
+				WHEN INC => CU_Signals <= "101000001000X000000";
+				WHEN DEC => CU_Signals <= "101000001100X000000";
+				WHEN NEG => CU_Signals <= "101000010000X000000";
+				WHEN OutDst => CU_Signals <= "100010110100X000000";
+				WHEN InDst => CU_Signals <= "001100110100X000000";
+				WHEN RLC => CU_Signals <= "101000101100X000000";
+				WHEN Rrc => CU_Signals <= "101000110000X000000";
+				WHEN MOV => CU_Signals <= "101000110100X000000";
+				WHEN ADD => CU_Signals <= "111000010100X000000";
+				WHEN SUB => CU_Signals <= "111000011000X000000";
+				WHEN AND_OP => CU_Signals <= "111000011100X000000";
+				WHEN OR_OP => CU_Signals <= "111000100000X000000";
+				WHEN Iadd => CU_Signals <= "101001010100X000000";
+				WHEN Shl => CU_Signals <= "101001100100X000000";
+				WHEN Shr => CU_Signals <= "101001101000X000000";
+				WHEN PUSH => CU_Signals <= "0100001101010000000";
+				WHEN POP => CU_Signals <= "0010001101100110000";
+				WHEN Ldm => CU_Signals <= "001001111000X000000";
+				WHEN Ldd => CU_Signals <= "1010010101101100000";
+				WHEN Std => CU_Signals <= "1100010101011000000";
+				WHEN Jz => CU_Signals <= "100000XXXX00X000000";
+				WHEN Jn => CU_Signals <= "100000XXXX00X000000";
+				WHEN Jc => CU_Signals <= "100000XXXX00X000000";
+				WHEN JMP => CU_Signals <= "100000XXXX00X000000";
+				WHEN CALL => CU_Signals <= "000000XXXX010000010";
+				WHEN RET => CU_Signals <= "000000XXXX100010101";
+				WHEN DECSP => CU_Signals <= "000000XXXX00X001000";
+				WHEN OTHERS => CU_Signals <= "XXXXXXXXXXXXXXXXXXX";
+			END CASE;
+		END IF;
+
+	END PROCESS;
+END ARCHITECTURE;

@@ -191,33 +191,33 @@ res := (others => '0');
 		z <= ccr(2);
 		------------------rlc-----------------------
 	    when "1011" =>    
-        result (31 downto 1) := in1(30 downto 0);
-        result(0) := ccr(0);
+        result (31 downto 1) <= in1(30 downto 0);
+        result(0) <= ccr(0);
 		c <= in1(31);
         n <= ccr(1);
 		z <= ccr(2);
 		----------------rrc------------------------
 		when "1100" =>    
-        result(31) := ccr(0);
-        result(30 downto 0) := in1(31 downto 1);
+        result(31) <= ccr(0);
+        result(30 downto 0) <= in1(31 downto 1);
 		c <= in1(0);
         n <= ccr(1);
 		z <= ccr(2);
 		---------------select in1-------------------
 		when "1101" =>    
-        result := in1;
+        result <= in1;
 		c <= ccr(0);
         n <= ccr(1);
 		z <= ccr(2);
 		---------------select in2----------------------
 		when "1110" =>    
-        result := in2;
+        result <= in2;
 		c <= ccr(0);
         n <= ccr(1);
 		z <= ccr(2);
 		---------------set carry -----------------------
 		when "1111"=>    
-        result := in1;
+        result <= in1;
 		c <= '1';
         n <= ccr(1);
 		z <= ccr(2);

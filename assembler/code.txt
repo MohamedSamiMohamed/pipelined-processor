@@ -12,5 +12,5 @@
 inc R1
 inc R2
 inc R3
-inc R1
+inc R4
 add R1,R2
