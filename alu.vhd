@@ -57,7 +57,7 @@ one_Two: n_adder  GENERIC MAP (32) PORT MAP (in1,com2,'0',in1_2,c1_2);
 oneOne: n_adder  GENERIC MAP (32) PORT MAP (in1,(others => '0'),'1',in11,c11);
 one_One: n_adder  GENERIC MAP (32) PORT MAP (in1,(others => '1'),'0',in1_1,c1_1);
 ----------------------------------------------------------
-process(in1,in2,operation)
+process(in1,in2,operation,CLK)
 variable in2i : integer ;
 variable res : std_logic_vector(31 downto 0);
 begin
@@ -86,6 +86,7 @@ res := (others => '0');
 	   ------------------------------inc-------------------
 	  when "0010" =>
         res := in11;
+		result <= in11;
 		c <= ccr(0);
         if res(31) = '1' then 
 			n <= '1';

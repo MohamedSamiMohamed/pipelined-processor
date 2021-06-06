@@ -33,3 +33,4 @@ sim:/cpu/offset_imm_in_signal
 force -freeze sim:/cpu/Clk 1 0, 0 {50 ps} -r 100
 force -freeze sim:/cpu/Rst 1 0
 run
+force -freeze sim:/cpu/Rst 0 0
