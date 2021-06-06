@@ -15,10 +15,7 @@ ENTITY memStage IS
         SP_Operation : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
         PC : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         ReadData2 : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        result : INOUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-        MemToPC : INOUT STD_LOGIC;
-        RdstCode : INOUT STD_LOGIC_VECTOR(2 DOWNTO 0);
-        WB_signals : INOUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+        result : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         MemDataRead : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
     );
 END ENTITY;
