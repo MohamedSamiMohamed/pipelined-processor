@@ -36,19 +36,14 @@ END COMPONENT;
 ------------------------------------------------------
 Signal com1 , com2 , in12 , in1_2, in11 , in1_1: std_logic_vector(31 Downto 0);
 Signal c12,c1_2,c11,c1_1 : std_logic ;
-
--- signal resl,resr,resrl,resrr : std_logic_vector(31 downto 0) ;
+signal in2i : integer := to_integer(signed(in2));
+signal resl : std_logic_vector(31 downto 0) := (in1(31-in2i downto 0) & (in2i-1 downto 0 => '0') )  ;
+signal resr : std_logic_vector(31 downto 0) := ((31 downto (31-in2i) => '0') & in1(30 downto in2i)) ;
+signal resrl : std_logic_vector(31 downto 0) := (in1(30 downto 0) & ccr(0));
+signal resrr : std_logic_vector(31 downto 0) := (ccr(0) & in1(31 downto 1) ) ;
 begin
 ----------------------------------------------------------
 
---resl(31 downto in2i) <= in1(31-in2i downto 0);
---resl(in2i-1 downto 0) <= (others => '0');
---resr(31 downto (31-in2i+1)) <= (others => '0'); 
---resr((31-in2i) downto 0) <= in1(30 downto in2i);
---resrl (31 downto 1) <= in1(30 downto 0);
---resrl(0) <= ccr(0);
---resrr(31) <= ccr(0);
---resrr(30 downto 0) <= in1(31 downto 1);
 ---------------------------------------------------------
 complement1 :complement GENERIC MAP (32) PORT MAP (in1,com1); 
 complement2 :complement GENERIC MAP (32) PORT MAP (in2,com2); 
@@ -57,176 +52,249 @@ one_Two: n_adder  GENERIC MAP (32) PORT MAP (in1,com2,'0',in1_2,c1_2);
 oneOne: n_adder  GENERIC MAP (32) PORT MAP (in1,(others => '0'),'1',in11,c11);
 one_One: n_adder  GENERIC MAP (32) PORT MAP (in1,(others => '1'),'0',in1_1,c1_1);
 ----------------------------------------------------------
-process(in1,in2,operation)
-variable in2i : integer ;
-variable res : std_logic_vector(31 downto 0);
-begin
-in2i := to_integer(unsigned(in2));
-res := (others => '0');
+with operation select 
+result <= (others => '0') when "0000",
+           not in1 when "0001",
+	   in11 when "0010" ,
+	   in1_1 when "0011" ,
+	   com1  when "0100" ,
+	   in12 when "0101" ,
+	   in1_2 when "0110" ,
+	   in1 and in2 when "0111" ,
+	   in1 or in2 when "1000" ,
+	   resl when "1001" ,
+	   resr when "1010" ,
+	   resrl when "1011" ,
+	   resrr when "1100" ,
+	   in2 when "1110" ,
+	   in1 when others ;
 
-  case operation is
-	   ------------------------------clear-------------------------
-      when "0000" =>
-		result <= (others => '0');
-		c <= ccr(0);
-		n <= ccr(1);
-		z <= '1';
-		-----------------------------Not--------------------
-	  when "0001" =>
-        res := not in1;
-		result <= not in1;
-	    c <= ccr(0);
-        if res(31) = '1' then 
-			n <= '1';
-	   else n <= '0';
-	   end if;
-	   if res = (31 downto 0 => '0') then 
-			z <= '1';
-       else z <= '0';
-       end if;
-	   ------------------------------inc-------------------
-	  when "0010" =>
-        res := in11;
-		result <= in11;
-		c <= ccr(0);
-        if res(31) = '1' then 
-			n <= '1';
-	   else n <= '0';
-	   end if;
-	   if res = (31 downto 0 => '0') then 
-			z <= '1';
-       else z <= '0';
-       end if;
-	   ---------------------------dec------------------------
-	   when "0011" =>
-        res := in1_1;
-		result <= in1_1;
-		c <= ccr(0);
-        if res(31) = '1' then 
-			n <= '1';
-	   else n <= '0';
-	   end if;
-	   if res = (31 downto 0 => '0') then 
-			z <= '1';
-       else z <= '0';
-       end if;
-	   ------------------------neg------------------------
-	   when "0100" =>   
-        res := com1;
-		result <= com1;
-		c <= ccr(0);
-        if res(31) = '1' then 
-			n <= '1';
-	   else n <= '0';
-	   end if;
-	   if res = (31 downto 0 => '0') then 
-			z <= '1';
-       else z <= '0';
-       end if;
-	   ----------------------add-------------------------
-	   when "0101" =>   
-        res := in12 ;
-		result <= in12;
-		c <= c12;
-        if res(31) = '1' then 
-			n <= '1';
-	   else n <= '0';
-	   end if;
-	   if res = (31 downto 0 => '0') then 
-			z <= '1';
-       else z <= '0';
-       end if;
-	   ----------------------sub------------------------
-	   when "0110" =>   
-        res := in1_2;
-		result <= in1_2;
-		c <= c1_2;
-        if res(31) = '1' then 
-			n <= '1';
-	   else n <= '0';
-	   end if;
-	   if res = (31 downto 0 => '0') then 
-			z <= '1';
-       else z <= '0';
-       end if;
-	   ---------------------And-----------------------
-	   when "0111" =>   
-        res := in1 and in2;
-		result <= in1 and in2;
-		c <= ccr(0);
-        if res(31) = '1' then 
-			n <= '1';
-	   else n <= '0';
-	   end if;
-	   if res = (31 downto 0 => '0') then 
-			z <= '1';
-       else z <= '0';
-       end if;
-	   ---------------------or------------------------
-	   when "1000" =>   
-        res := in1 or in2;
-		result <= in1 or in2;
-		c <= ccr(0);
-        if res(31) = '1' then 
-			n <= '1';
-	   else n <= '0';
-	   end if;
-	   if res = (31 downto 0 => '0') then 
-			z <= '1';
-       else z <= '0';
-       end if;
-	   --------------------shl-----------------------
-	   when "1001" =>    --shift in1 by in2
-        result(31 downto in2i) <= in1(31-in2i downto 0);
-	    result(in2i-1 downto 0) <= (others => '0');
-		c <= in1(32-in2i);
-        n <= ccr(1);
-		z <= ccr(2);
-		-----------------shr-------------------------
-	   when "1010" =>    --shift in1 by in2
-	   result(31 downto (31-in2i+1)) <= (others => '0'); 
-	   result((31-in2i) downto 0) <= in1(31 downto in2i);
-		c <= in1(in2i);
-        n <= ccr(1);
-		z <= ccr(2);
-		------------------rlc-----------------------
-	    when "1011" =>    
-        result (31 downto 1) <= in1(30 downto 0);
-        result(0) <= ccr(0);
-		c <= in1(31);
-        n <= ccr(1);
-		z <= ccr(2);
-		----------------rrc------------------------
-		when "1100" =>    
-        result(31) <= ccr(0);
-        result(30 downto 0) <= in1(31 downto 1);
-		c <= in1(0);
-        n <= ccr(1);
-		z <= ccr(2);
-		---------------select in1-------------------
-		when "1101" =>    
-        result <= in1;
-		c <= ccr(0);
-        n <= ccr(1);
-		z <= ccr(2);
-		---------------select in2----------------------
-		when "1110" =>    
-        result <= in2;
-		c <= ccr(0);
-        n <= ccr(1);
-		z <= ccr(2);
-		---------------set carry -----------------------
-		when "1111"=>    
-        result <= in1;
-		c <= '1';
-        n <= ccr(1);
-		z <= ccr(2);
-		----------------else --------------------------
-		when others =>
-	    c <= ccr(0);
-        n <= ccr(1);
-        z <= ccr(2);
-    end case;
-end process;
+-----------------------------------------------------------
+with operation select 
+c      <= c12 when "0101" ,
+	   c1_2 when "0110" ,
+	   in1(32-in2i) when "1001" ,
+	   in1(in2i) when "1010" ,
+	   in1(31) when "1011" ,
+	   in1(0) when "1100" ,
+	   '1' when "1111" ,
+	   ccr(0) when others ;
+-----------------------------------------------------------	   
+with operation select 
+n      <= not in1(31)  when "0001",
+	   in11(31)     when "0010",	   
+	   in1_1(31) when "0011",
+	   com1(31) when "0100",  
+	   in12 (31) when "0101"  ,
+	   in1_2(31) when "0110"  ,
+	   in1(31) and in2(31) when "0111" ,
+	   in1(31) or in2(31) when "1000" ,
+	   ccr(1) when others ;
+-----------------------------------------------------------	   
+with operation select 
+z      <= '1'  when "0000",
+	   or_reduce(not in1)  when "0001",
+	   or_reduce(in11)     when "0010",	   
+	   or_reduce(in1_1) when "0011",
+	   or_reduce(com1) when "0100",  
+	   or_reduce(in12) when "0101"  ,
+	   or_reduce(in1_2) when "0110"  ,
+	   or_reduce(in1 and in2) when "0111" ,
+	   or_reduce(in1 or in2) when "1000" ,
+	   ccr(2) when others ;
+-- Signal com1 , com2 , in12 , in1_2, in11 , in1_1: std_logic_vector(31 Downto 0);
+-- Signal c12,c1_2,c11,c1_1 : std_logic ;
+
+-- -- signal resl,resr,resrl,resrr : std_logic_vector(31 downto 0) ;
+-- begin
+-- ----------------------------------------------------------
+
+-- --resl(31 downto in2i) <= in1(31-in2i downto 0);
+-- --resl(in2i-1 downto 0) <= (others => '0');
+-- --resr(31 downto (31-in2i+1)) <= (others => '0'); 
+-- --resr((31-in2i) downto 0) <= in1(30 downto in2i);
+-- --resrl (31 downto 1) <= in1(30 downto 0);
+-- --resrl(0) <= ccr(0);
+-- --resrr(31) <= ccr(0);
+-- --resrr(30 downto 0) <= in1(31 downto 1);
+-- ---------------------------------------------------------
+-- complement1 :complement GENERIC MAP (32) PORT MAP (in1,com1); 
+-- complement2 :complement GENERIC MAP (32) PORT MAP (in2,com2); 
+-- oneTwo: n_adder  GENERIC MAP (32) PORT MAP (in1,in2,'0',in12,c12);
+-- one_Two: n_adder  GENERIC MAP (32) PORT MAP (in1,com2,'0',in1_2,c1_2);
+-- oneOne: n_adder  GENERIC MAP (32) PORT MAP (in1,(others => '0'),'1',in11,c11);
+-- one_One: n_adder  GENERIC MAP (32) PORT MAP (in1,(others => '1'),'0',in1_1,c1_1);
+-- ----------------------------------------------------------
+-- process(in1,in2,operation)
+-- variable in2i : integer ;
+-- variable res : std_logic_vector(31 downto 0);
+-- begin
+-- in2i := to_integer(unsigned(in2));
+-- res := (others => '0');
+
+--   case operation is
+-- 	   ------------------------------clear-------------------------
+--       when "0000" =>
+-- 		result <= (others => '0');
+-- 		c <= ccr(0);
+-- 		n <= ccr(1);
+-- 		z <= '1';
+-- 		-----------------------------Not--------------------
+-- 	  when "0001" =>
+--         res := not in1;
+-- 		result <= not in1;
+-- 	    c <= ccr(0);
+--         if res(31) = '1' then 
+-- 			n <= '1';
+-- 	   else n <= '0';
+-- 	   end if;
+-- 	   if res = (31 downto 0 => '0') then 
+-- 			z <= '1';
+--        else z <= '0';
+--        end if;
+-- 	   ------------------------------inc-------------------
+-- 	  when "0010" =>
+--         res := in11;
+-- 		result <= in11;
+-- 		c <= ccr(0);
+--         if res(31) = '1' then 
+-- 			n <= '1';
+-- 	   else n <= '0';
+-- 	   end if;
+-- 	   if res = (31 downto 0 => '0') then 
+-- 			z <= '1';
+--        else z <= '0';
+--        end if;
+-- 	   ---------------------------dec------------------------
+-- 	   when "0011" =>
+--         res := in1_1;
+-- 		result <= in1_1;
+-- 		c <= ccr(0);
+--         if res(31) = '1' then 
+-- 			n <= '1';
+-- 	   else n <= '0';
+-- 	   end if;
+-- 	   if res = (31 downto 0 => '0') then 
+-- 			z <= '1';
+--        else z <= '0';
+--        end if;
+-- 	   ------------------------neg------------------------
+-- 	   when "0100" =>   
+--         res := com1;
+-- 		result <= com1;
+-- 		c <= ccr(0);
+--         if res(31) = '1' then 
+-- 			n <= '1';
+-- 	   else n <= '0';
+-- 	   end if;
+-- 	   if res = (31 downto 0 => '0') then 
+-- 			z <= '1';
+--        else z <= '0';
+--        end if;
+-- 	   ----------------------add-------------------------
+-- 	   when "0101" =>   
+--         res := in12 ;
+-- 		result <= in12;
+-- 		c <= c12;
+--         if res(31) = '1' then 
+-- 			n <= '1';
+-- 	   else n <= '0';
+-- 	   end if;
+-- 	   if res = (31 downto 0 => '0') then 
+-- 			z <= '1';
+--        else z <= '0';
+--        end if;
+-- 	   ----------------------sub------------------------
+-- 	   when "0110" =>   
+--         res := in1_2;
+-- 		result <= in1_2;
+-- 		c <= c1_2;
+--         if res(31) = '1' then 
+-- 			n <= '1';
+-- 	   else n <= '0';
+-- 	   end if;
+-- 	   if res = (31 downto 0 => '0') then 
+-- 			z <= '1';
+--        else z <= '0';
+--        end if;
+-- 	   ---------------------And-----------------------
+-- 	   when "0111" =>   
+--         res := in1 and in2;
+-- 		result <= in1 and in2;
+-- 		c <= ccr(0);
+--         if res(31) = '1' then 
+-- 			n <= '1';
+-- 	   else n <= '0';
+-- 	   end if;
+-- 	   if res = (31 downto 0 => '0') then 
+-- 			z <= '1';
+--        else z <= '0';
+--        end if;
+-- 	   ---------------------or------------------------
+-- 	   when "1000" =>   
+--         res := in1 or in2;
+-- 		result <= in1 or in2;
+-- 		c <= ccr(0);
+--         if res(31) = '1' then 
+-- 			n <= '1';
+-- 	   else n <= '0';
+-- 	   end if;
+-- 	   if res = (31 downto 0 => '0') then 
+-- 			z <= '1';
+--        else z <= '0';
+--        end if;
+-- 	   --------------------shl-----------------------
+-- 	   when "1001" =>    --shift in1 by in2
+--         result(31 downto in2i) <= in1(31-in2i downto 0);
+-- 	    result(in2i-1 downto 0) <= (others => '0');
+-- 		c <= in1(32-in2i);
+--         n <= ccr(1);
+-- 		z <= ccr(2);
+-- 		-----------------shr-------------------------
+-- 	   when "1010" =>    --shift in1 by in2
+-- 	   result(31 downto (31-in2i+1)) <= (others => '0'); 
+-- 	   result((31-in2i) downto 0) <= in1(31 downto in2i);
+-- 		c <= in1(in2i);
+--         n <= ccr(1);
+-- 		z <= ccr(2);
+-- 		------------------rlc-----------------------
+-- 	    when "1011" =>    
+--         result (31 downto 1) <= in1(30 downto 0);
+--         result(0) <= ccr(0);
+-- 		c <= in1(31);
+--         n <= ccr(1);
+-- 		z <= ccr(2);
+-- 		----------------rrc------------------------
+-- 		when "1100" =>    
+--         result(31) <= ccr(0);
+--         result(30 downto 0) <= in1(31 downto 1);
+-- 		c <= in1(0);
+--         n <= ccr(1);
+-- 		z <= ccr(2);
+-- 		---------------select in1-------------------
+-- 		when "1101" =>    
+--         result <= in1;
+-- 		c <= ccr(0);
+--         n <= ccr(1);
+-- 		z <= ccr(2);
+-- 		---------------select in2----------------------
+-- 		when "1110" =>    
+--         result <= in2;
+-- 		c <= ccr(0);
+--         n <= ccr(1);
+-- 		z <= ccr(2);
+-- 		---------------set carry -----------------------
+-- 		when "1111"=>    
+--         result <= in1;
+-- 		c <= '1';
+--         n <= ccr(1);
+-- 		z <= ccr(2);
+-- 		----------------else --------------------------
+-- 		when others =>
+-- 	    c <= ccr(0);
+--         n <= ccr(1);
+--         z <= ccr(2);
+--     end case;
+-- end process;
 
 end Architecture;
