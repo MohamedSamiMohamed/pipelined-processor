@@ -61,7 +61,7 @@ def decodeInstruction(instruction):
     return code
 
 instructions=[]
-with open("our test case .txt") as codeFile:
+with open("code.txt") as codeFile:
     for line in codeFile:
         line = line.upper()
         line = line.replace('\t', '')
@@ -83,7 +83,7 @@ decodedInstruction=["0000000000000000"]*4095
 for instruction in instructions:
     if(instruction.find(".ORG")!=-1):
         print("i'm org")
-        memlocation=int(re.split(' ',instruction)[1])
+        memlocation=int(re.split(' ',instruction)[1],16)
     elif(instruction.isdecimal()):
         val = int(instruction,16)
         address = "{0:16b}".format(val).replace(" ","0")
