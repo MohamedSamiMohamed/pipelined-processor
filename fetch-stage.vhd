@@ -1,5 +1,3 @@
-
-
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.numeric_std.ALL;
@@ -69,8 +67,8 @@ ARCHITECTURE fetchStageArch OF fetchStage IS
     SIGNAL Inst_Signal : STD_LOGIC_VECTOR(31 DOWNTO 0);
 BEGIN
     inst <= Inst_Signal;
-    --if PcSrc=0 select ReadData1 which is a register data, if PcSrc=1 select the incremented PC
-    PC_OR_REG : Mux_2x1 PORT MAP(ReadData1, IncrementedPcIn, PcSrc, PC_RegFile_out);
+    --if PcSrc=0 select the incremented PC which is a register data, if PcSrc=1 select ReadData1
+    PC_OR_REG : Mux_2x1 PORT MAP(IncrementedPcIn, ReadData1, PcSrc, PC_RegFile_out);
     --if MemToPC=0 select PC_RegFile_out which is a register data or the incPc, if MemToPC=1 select the memory data
     MEM_To_PC : Mux_2x1 PORT MAP(PC_RegFile_out, MemData, MemToPC, InputPc);
     -- PC register
