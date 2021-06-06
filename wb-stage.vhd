@@ -9,11 +9,8 @@ ENTITY wbStage IS
         clk : IN STD_LOGIC;
         reset : IN STD_LOGIC;
         MemToReg : IN STD_LOGIC;
-        WriteRegEnable : INOUT STD_LOGIC;
-        WriteOutportEnable : INOUT STD_LOGIC;
         MemData : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         result : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        RdstCode : INOUT STD_LOGIC_VECTOR(2 DOWNTO 0);
         WrittenData : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
     );
 END ENTITY;

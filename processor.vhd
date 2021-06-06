@@ -121,11 +121,8 @@ ARCHITECTURE CPUArch OF CPU IS
             clk : IN STD_LOGIC;
             reset : IN STD_LOGIC;
             MemToReg : IN STD_LOGIC;
-            WriteRegEnable : INOUT STD_LOGIC;
-            WriteOutportEnable : INOUT STD_LOGIC;
             MemData : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
             result : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-            RdstCode : INOUT STD_LOGIC_VECTOR(2 DOWNTO 0);
             WrittenData : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
         );
     END COMPONENT;
@@ -170,16 +167,16 @@ BEGIN
     ---------------------------------------------------------------------------
     ---------------------------------------DECODING UNIT-----------------------
     ---------------------------------------------------------------------------
-    -- Decode : DECODE_Stage port map (Rst,Clk,'0',IF_ID_Out(31 downto 27),IF_ID_Out(26 downto 24),IF_ID_Out(23 downto 21),WB_WriteData,IF_ID_Out(23 downto 21),offset_imm_in_signal,IF_ID_Out(63 downto 32),ReadData1,ReadData2,offset_imm,EX_signals,MemWbSignals,RsrcCode,RdstCode,IncreamentedPcDecode);
+    Decode : DECODE_Stage port map (Rst,Clk,'0',IF_ID_Out(31 downto 27),IF_ID_Out(26 downto 24),IF_ID_Out(23 downto 21),WB_WriteData,IF_ID_Out(23 downto 21),offset_imm_in_signal,IF_ID_Out(63 downto 32),ReadData1,ReadData2,offset_imm,EX_signals,MemWbSignals,RsrcCode,RdstCode,IncreamentedPcDecode);
     --------------------------------------------------DECODE FOR TEST------------------------------------------------
-    Decode : DECODE_Stage PORT MAP(Rst, Clk, '0', IF_ID_Out(31 DOWNTO 27), IF_ID_Out(26 DOWNTO 24), IF_ID_Out(23 DOWNTO 21), "00000000000000000000000000000000", IF_ID_Out(23 DOWNTO 21), offset_imm_in_signal, IF_ID_Out(63 DOWNTO 32), ReadData1, ReadData2, offset_imm, EX_signals, MemWbSignals, RsrcCode, RdstCode, IncreamentedPcDecode);
+    -- Decode : DECODE_Stage PORT MAP(Rst, Clk, '0', IF_ID_Out(31 DOWNTO 27), IF_ID_Out(26 DOWNTO 24), IF_ID_Out(23 DOWNTO 21), "00000000000000000000000000000000", IF_ID_Out(23 DOWNTO 21), offset_imm_in_signal, IF_ID_Out(63 DOWNTO 32), ReadData1, ReadData2, offset_imm, EX_signals, MemWbSignals, RsrcCode, RdstCode, IncreamentedPcDecode);
     ID_EX : ID_EX_Buffer PORT MAP(Clk, Rst, MemWbSignals(9 DOWNTO 7), MemWbSignals(6 DOWNTO 0), ReadData1, ReadData2, offset_imm, EX_signals(5 DOWNTO 2), EX_signals(1), RsrcCode, RdstCode, IncreamentedPcDecode, EX_signals(0), IF_ID_Out(31 DOWNTO 27), ID_EX_Q);
     -- ---------------------------------------------------------------------------
     -- ---------------------------------------EXCUTION UNIT-----------------------
     -- ---------------------------------------------------------------------------
-    -- excute : EX_Stage port map (EX_MEM_Q(108 downto 77),WB_WriteData,ID_EX_Q(138 DOWNTO 107),ID_EX_Q(106 DOWNTO 75),ID_EX_Q(74 DOWNTO 43),"00","00",ID_EX_Q(42 DOWNTO 39),ID_EX_Q(154 downto 150),ID_EX_Q(38),Clk,Rst,ExResult,PcSrc); 
+    excute : EX_Stage port map (EX_MEM_Q(108 downto 77),WB_WriteData,ID_EX_Q(138 DOWNTO 107),ID_EX_Q(106 DOWNTO 75),ID_EX_Q(74 DOWNTO 43),"00","00",ID_EX_Q(42 DOWNTO 39),ID_EX_Q(154 downto 150),ID_EX_Q(38),Clk,Rst,ExResult,PcSrc); 
     --------------------------------------------EXECUTE UNDER TEST----------------------------------
-    excute : EX_Stage PORT MAP(EX_MEM_Q(108 DOWNTO 77), "00000000000000000000000000000000", ID_EX_Q(138 DOWNTO 107), ID_EX_Q(106 DOWNTO 75), ID_EX_Q(74 DOWNTO 43), "00", "00", ID_EX_Q(42 DOWNTO 39), ID_EX_Q(154 DOWNTO 150), ID_EX_Q(38), Clk, Rst, ExResult, PcSrc);
+    -- excute : EX_Stage PORT MAP(EX_MEM_Q(108 DOWNTO 77), "00000000000000000000000000000000", ID_EX_Q(138 DOWNTO 107), ID_EX_Q(106 DOWNTO 75), ID_EX_Q(74 DOWNTO 43), "00", "00", ID_EX_Q(42 DOWNTO 39), ID_EX_Q(154 DOWNTO 150), ID_EX_Q(38), Clk, Rst, ExResult, PcSrc);
     EX_MEM : ExMemBuffer PORT MAP(Clk, Rst, ExResult, ID_EX_Q(106 DOWNTO 75), ID_EX_Q(31 DOWNTO 0), ID_EX_Q(34 DOWNTO 32), ID_EX_Q(145 DOWNTO 139), ID_EX_Q(148 DOWNTO 146), EX_MEM_Q);
     -- ---------------------------------------------------------------------------
     -- ---------------------------------------MEMORY UNIT-----------------------
@@ -189,5 +186,5 @@ BEGIN
     -- ---------------------------------------------------------------------------
     -- ---------------------------------------WRITE BACK UNIT-----------------------
     -- ---------------------------------------------------------------------------
-    writeBack : wbStage port map (Clk,Rst,MEM_WB_Q(67),MEM_WB_Q(69),MEM_WB_Q(68),MEM_WB_Q(66 downto 35),MEM_WB_Q(34 downto 3),MEM_WB_Q(2 downto 0),WB_WriteData);
+    writeBack : wbStage port map (Clk,Rst,MEM_WB_Q(67),MEM_WB_Q(66 downto 35),MEM_WB_Q(34 downto 3),WB_WriteData);
 END CPUArch;
