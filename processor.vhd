@@ -70,15 +70,16 @@ ARCHITECTURE CPUArch OF CPU IS
     END COMPONENT;
     -----------------------------------------------------EXECUTION SATGE---------------------------------------------
     COMPONENT EX_Stage IS
-        PORT (
-            ex_mem_data, mem_wb_data, read_data1, read_data2, immediate : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-            forward_in1, forward_in2 : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
-            alu_op : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
-            opCode : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
-            take_immediate, CLK, Rst : IN STD_LOGIC;
-            result : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-            pcSrc : OUT STD_LOGIC
-        );
+    PORT (
+		ex_mem_data, mem_wb_data, read_data1, read_data2, immediate : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+		ID_EX_Rsrc_Code , ID_EX_Rdst_Code ,EX_MEM_Rdst_Code ,MEM_WB_Rdst_Code : in std_logic_vector(2 downto 0);
+		EX_MEM_RegWriteEnable ,MEM_WB_RegWriteEnable : in std_logic;
+		alu_op : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+		opCode : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+		take_immediate, CLK, Rst : IN STD_LOGIC;
+		result : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+		pcSrc : OUT STD_LOGIC
+	);
     END COMPONENT;
     -----------------------------------------------------EX/MEM BUFFER-----------------------------------------------
     COMPONENT ExMemBuffer IS PORT (
@@ -175,7 +176,7 @@ BEGIN
     -- ---------------------------------------------------------------------------
     -- ---------------------------------------EXCUTION UNIT-----------------------
     -- ---------------------------------------------------------------------------
-    excute : EX_Stage PORT MAP(EX_MEM_Q(108 DOWNTO 77), WB_WriteData, ID_EX_Q(138 DOWNTO 107), ID_EX_Q(106 DOWNTO 75), ID_EX_Q(74 DOWNTO 43), "00", "00", ID_EX_Q(42 DOWNTO 39), ID_EX_Q(154 DOWNTO 150), ID_EX_Q(38), Clk, Rst, ExResult, PcSrc);
+    excute : EX_Stage PORT MAP(EX_MEM_Q(108 DOWNTO 77), WB_WriteData, ID_EX_Q(138 DOWNTO 107), ID_EX_Q(106 DOWNTO 75), ID_EX_Q(74 DOWNTO 43),ID_EX_Q(37 DOWNTO 35),ID_EX_Q(34 DOWNTO 32),EX_MEM_Q(12 DOWNTO 10), MEM_WB_Q(2 downto 0),EX_MEM_Q(2),MEM_WB_Q(69), ID_EX_Q(42 DOWNTO 39), ID_EX_Q(154 DOWNTO 150), ID_EX_Q(38), Clk, Rst, ExResult, PcSrc);
     --------------------------------------------EXECUTE UNDER TEST----------------------------------
     -- excute : EX_Stage PORT MAP(EX_MEM_Q(108 DOWNTO 77), "00000000000000000000000000000000", ID_EX_Q(138 DOWNTO 107), ID_EX_Q(106 DOWNTO 75), ID_EX_Q(74 DOWNTO 43), "00", "00", ID_EX_Q(42 DOWNTO 39), ID_EX_Q(154 DOWNTO 150), ID_EX_Q(38), Clk, Rst, ExResult, PcSrc);
     EX_MEM : ExMemBuffer PORT MAP(Clk, Rst, ExResult, ID_EX_Q(106 DOWNTO 75), ID_EX_Q(31 DOWNTO 0), ID_EX_Q(34 DOWNTO 32), ID_EX_Q(145 DOWNTO 139), ID_EX_Q(148 DOWNTO 146), EX_MEM_Q);
