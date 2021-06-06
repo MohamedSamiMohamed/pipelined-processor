@@ -185,7 +185,7 @@ BEGIN
     memory : memStage PORT MAP(Clk, Rst, EX_MEM_Q(8), EX_MEM_Q(9), EX_MEM_Q(3), EX_MEM_Q(7), EX_MEM_Q(6 DOWNTO 5), EX_MEM_Q(44 DOWNTO 13), EX_MEM_Q(76 DOWNTO 45), EX_MEM_Q(108 DOWNTO 77), MemDataRead);
     MEM_WB : MEM_WB_Buffer PORT MAP(Clk, Rst, EX_MEM_Q(2 DOWNTO 0), MemDataRead, EX_MEM_Q(108 DOWNTO 77), EX_MEM_Q(12 DOWNTO 10), MEM_WB_Q);
     -- ---------------------------------------------------------------------------
-    -- ---------------------------------------WRITE BACK UNIT-----------------------
+    -- ---------------------------------------WRITE BACK UNIT---------------------
     -- ---------------------------------------------------------------------------
     writeBack : wbStage PORT MAP(Clk, Rst, MEM_WB_Q(67), MEM_WB_Q(66 DOWNTO 35), MEM_WB_Q(34 DOWNTO 3), WB_WriteData);
 END CPUArch;

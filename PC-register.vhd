@@ -7,6 +7,7 @@ ENTITY PC_Register IS
         Clk, Rst : IN STD_LOGIC;
         ResetValue : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         d : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        stall : IN STD_LOGIC;
         q : OUT STD_LOGIC_VECTOR(31 DOWNTO 0));
 END ENTITY;
 ARCHITECTURE PC_RegisterArch OF PC_Register IS
@@ -16,7 +17,9 @@ BEGIN
         IF Rst = '1' THEN
             q <= "0000000000000000" & ResetValue;
         ELSIF rising_edge(Clk) THEN
-            q <= d;
+            IF (stall = '0') THEN
+                q <= d;
+            END IF;
         END IF;
     END PROCESS;
 END PC_RegisterArch;

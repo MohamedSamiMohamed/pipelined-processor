@@ -72,7 +72,7 @@ BEGIN
 			CU_Signals <= "0000000000000000000";
 		ELSIF (NopEn = '1') THEN
 			-- NOPen
-			CU_Signals <= "000000XXXX00XX00000";
+			CU_Signals <= "0000000000000000000";
 		ELSE
 			CASE Opcode IS
 				WHEN NOP => CU_Signals <= "000000XXXX00XX00000";
