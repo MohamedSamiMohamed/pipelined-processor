@@ -11,4 +11,4 @@
 .ORG 10
 inc R1
 inc R2
-add R1,R2
+STD R1,10(R2)
