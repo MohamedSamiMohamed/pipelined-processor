@@ -11,7 +11,7 @@ ENTITY branchDetection IS
 END ENTITY;
 ARCHITECTURE branchDetectionArch OF branchDetection IS
 BEGIN
-    PcSrc <= (OpCode(4) AND OpCode(3) AND OpCode(2) AND (NOT OpCode(1)) AND (NOT OpCode(0)))
+    PcSrc <= (OpCode(4) AND OpCode(3) AND OpCode(2) AND (NOT OpCode(1)) AND (NOT OpCode(0))) 
         OR ((OpCode(4) AND OpCode(3) AND (NOT OpCode(2)) AND OpCode(1) AND OpCode(0))AND C)
         OR ((OpCode(4) AND OpCode(3) AND (NOT OpCode(2)) AND OpCode(1) AND (NOT OpCode(0)))AND N)
         OR ((OpCode(4) AND OpCode(3) AND (NOT OpCode(2)) AND (NOT OpCode(1)) AND OpCode(0))AND Z);

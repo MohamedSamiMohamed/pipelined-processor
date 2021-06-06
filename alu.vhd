@@ -67,13 +67,14 @@ res := (others => '0');
   case operation is
 	   ------------------------------clear-------------------------
       when "0000" =>
-        res := (others => '0');
+		result <= (others => '0');
 		c <= ccr(0);
 		n <= ccr(1);
 		z <= '1';
 		-----------------------------Not--------------------
 	  when "0001" =>
         res := not in1;
+		result <= not in1;
 	    c <= ccr(0);
         if res(31) = '1' then 
 			n <= '1';
@@ -99,6 +100,7 @@ res := (others => '0');
 	   ---------------------------dec------------------------
 	   when "0011" =>
         res := in1_1;
+		result <= in1_1;
 		c <= ccr(0);
         if res(31) = '1' then 
 			n <= '1';
@@ -111,6 +113,7 @@ res := (others => '0');
 	   ------------------------neg------------------------
 	   when "0100" =>   
         res := com1;
+		result <= com1;
 		c <= ccr(0);
         if res(31) = '1' then 
 			n <= '1';
@@ -123,6 +126,7 @@ res := (others => '0');
 	   ----------------------add-------------------------
 	   when "0101" =>   
         res := in12 ;
+		result <= in12;
 		c <= c12;
         if res(31) = '1' then 
 			n <= '1';
@@ -135,6 +139,7 @@ res := (others => '0');
 	   ----------------------sub------------------------
 	   when "0110" =>   
         res := in1_2;
+		result <= in1_2;
 		c <= c1_2;
         if res(31) = '1' then 
 			n <= '1';
@@ -147,6 +152,7 @@ res := (others => '0');
 	   ---------------------And-----------------------
 	   when "0111" =>   
         res := in1 and in2;
+		result <= in1 and in2;
 		c <= ccr(0);
         if res(31) = '1' then 
 			n <= '1';
@@ -159,6 +165,7 @@ res := (others => '0');
 	   ---------------------or------------------------
 	   when "1000" =>   
         res := in1 or in2;
+		result <= in1 or in2;
 		c <= ccr(0);
         if res(31) = '1' then 
 			n <= '1';
@@ -170,47 +177,47 @@ res := (others => '0');
        end if;
 	   --------------------shl-----------------------
 	   when "1001" =>    --shift in1 by in2
-        res(31 downto in2i) := in1(31-in2i downto 0);
-	    res(in2i-1 downto 0) := (others => '0');
+        result(31 downto in2i) <= in1(31-in2i downto 0);
+	    result(in2i-1 downto 0) <= (others => '0');
 		c <= in1(32-in2i);
         n <= ccr(1);
 		z <= ccr(2);
 		-----------------shr-------------------------
 	   when "1010" =>    --shift in1 by in2
-        res(31 downto (31-in2i+1)) := (others => '0'); 
-	    res((31-in2i) downto 0) := in1(31 downto in2i);
+	   result(31 downto (31-in2i+1)) <= (others => '0'); 
+	   result((31-in2i) downto 0) <= in1(31 downto in2i);
 		c <= in1(in2i);
         n <= ccr(1);
 		z <= ccr(2);
 		------------------rlc-----------------------
 	    when "1011" =>    
-        res (31 downto 1) := in1(30 downto 0);
-        res(0) := ccr(0);
+        result (31 downto 1) := in1(30 downto 0);
+        result(0) := ccr(0);
 		c <= in1(31);
         n <= ccr(1);
 		z <= ccr(2);
 		----------------rrc------------------------
 		when "1100" =>    
-        res(31) := ccr(0);
-        res(30 downto 0) := in1(31 downto 1);
+        result(31) := ccr(0);
+        result(30 downto 0) := in1(31 downto 1);
 		c <= in1(0);
         n <= ccr(1);
 		z <= ccr(2);
 		---------------select in1-------------------
 		when "1101" =>    
-        res := in1;
+        result := in1;
 		c <= ccr(0);
         n <= ccr(1);
 		z <= ccr(2);
 		---------------select in2----------------------
 		when "1110" =>    
-        res := in2;
+        result := in2;
 		c <= ccr(0);
         n <= ccr(1);
 		z <= ccr(2);
 		---------------set carry -----------------------
 		when "1111"=>    
-        res := in1;
+        result := in1;
 		c <= '1';
         n <= ccr(1);
 		z <= ccr(2);
@@ -220,8 +227,6 @@ res := (others => '0');
         n <= ccr(1);
         z <= ccr(2);
     end case;
-result <= res;
-
 end process;
 
 end Architecture;
