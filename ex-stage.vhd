@@ -84,12 +84,12 @@ BEGIN
 	result <= result_out;
 	pcSrc <= pcSRC_out;
 	readData2Out <= data_in2_mux;
-	ccr_in <= c_o & n_o & z_o;
+	ccr_in <= z_o & n_o & c_o;
 	mux1 : Mux_4x1 GENERIC MAP(32) PORT MAP(read_data1, ex_mem_data, mem_wb_data, (OTHERS => '0'), forward_in1, data_in1);
 	mux2 : Mux_4x1 GENERIC MAP(32) PORT MAP(read_data2, ex_mem_data, mem_wb_data, (OTHERS => '0'), forward_in2, data_in2_mux);
 	mux4 : Mux_2x1 PORT MAP(data_in2_mux, immediate, take_immediate, data_in2);
 	forwarding : ForwardingUnit PORT MAP(CLK, Rst, ID_EX_Rsrc_Code, ID_EX_Rdst_Code, EX_MEM_Rdst_Code, MEM_WB_Rdst_Code, EX_MEM_RegWriteEnable, MEM_WB_RegWriteEnable, opCode, forward_in1, forward_in2);
 	alu_o : alu PORT MAP(data_in1, data_in2, alu_op, ccr_out_reg, CLK, result_out, c_o, n_o, z_o);
 	ccr : CCR_Register PORT MAP(CLK, Rst, ccr_in, ccr_out_reg);
-	branch_detection : branchDetection PORT MAP(opCode, n_o, z_o, c_o, pcSRC_out);
+	branch_detection : branchDetection PORT MAP(opCode, ccr_out_reg(1), ccr_out_reg(2), ccr_out_reg(0), pcSRC_out);
 END ARCHITECTURE;
