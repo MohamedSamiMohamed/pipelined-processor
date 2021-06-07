@@ -40,10 +40,20 @@ force -freeze sim:/cpu/Decode/Register_file/INPORT/input_reg 0000000000000000000
 run
 force -freeze sim:/cpu/Decode/Register_file/INPORT/input_reg 00000000000000000000000100000000 0
 run
-force -freeze sim:/cpu/Decode/Register_file/INPORT/input_reg 00000000000000000000001100000000 0
+force -freeze sim:/cpu/Decode/Register_file/INPORT/input_reg 00000000000000000000001000000000 0
 run
 run
 run
 run
 run
 run
+run
+force -freeze sim:/cpu/excute/ccr_out_reg(2) 1 0
+run
+run
+force -freeze sim:/cpu/excute/ccr_out_reg(2) 0 0
+run
+run
+run
+run
+force -freeze sim:/cpu/excute/ccr_out_reg(1) 1 0

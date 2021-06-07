@@ -83,7 +83,8 @@ ARCHITECTURE CPUArch OF CPU IS
             take_immediate, CLK, Rst : IN STD_LOGIC;
             result : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
             readData2Out : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-            pcSrc : OUT STD_LOGIC
+            pcSrc : OUT STD_LOGIC;
+            PC_MUX_IN : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
         );
     END COMPONENT;
     -----------------------------------------------------EX/MEM BUFFER-----------------------------------------------
@@ -183,12 +184,13 @@ ARCHITECTURE CPUArch OF CPU IS
     SIGNAL Nop_ID_EX : STD_LOGIC;
     SIGNAL Nop_EX_MEM : STD_LOGIC;
     SIGNAL stall : STD_LOGIC;
+    SIGNAL ReadData_PC_MUX : STD_LOGIC_VECTOR(31 DOWNTO 0);
     ------------------------------------------------------------------------------------------------------------------
 BEGIN
     hazard : HazardDetection PORT MAP(Rst, Clk, ID_EX_Q(145), ID_EX_Q(149), ID_EX_Q(34 DOWNTO 32), IF_ID_Out(26 DOWNTO 24), IF_ID_Out(23 DOWNTO 21), PcSrc, Nop_ID_EX, Nop_EX_MEM, stall);
     ------------------------------------------------------------------------------------------------------------------
     offset_imm_in_signal <= (31 DOWNTO 16 => '0') & IF_ID_Out(15 DOWNTO 0);
-    fetch : fetchStage PORT MAP(Clk, Rst, EX_MEM_Q(4), MemDataRead, PcSrc, ID_EX_Q(138 DOWNTO 107), IF_ID_Out(63 DOWNTO 32), stall, IncrementedPc, Inst);
+    fetch : fetchStage PORT MAP(Clk, Rst, EX_MEM_Q(4), MemDataRead, PcSrc, ReadData_PC_MUX, IF_ID_Out(63 DOWNTO 32), stall, IncrementedPc, Inst);
     ------------------------------------------FETCH FOR TEST----------------------------------------
     -- fetch : fetchStage PORT MAP(Clk, Rst,'0', MemDataRead, '0', ReadData1, IF_ID_Out(63 downto 32) ,IncrementedPc, Inst);
     IF_ID : IF_ID_Register PORT MAP(Clk, Rst, IncrementedPc, Inst, stall, IF_ID_Out);
@@ -202,7 +204,7 @@ BEGIN
     -- ---------------------------------------------------------------------------
     -- ---------------------------------------EXCUTION UNIT-----------------------
     -- ---------------------------------------------------------------------------
-    excute : EX_Stage PORT MAP(EX_MEM_Q(108 DOWNTO 77), WB_WriteData, ID_EX_Q(138 DOWNTO 107), ID_EX_Q(106 DOWNTO 75), ID_EX_Q(74 DOWNTO 43), ID_EX_Q(37 DOWNTO 35), ID_EX_Q(34 DOWNTO 32), EX_MEM_Q(12 DOWNTO 10), MEM_WB_Q(2 DOWNTO 0), EX_MEM_Q(2), MEM_WB_Q(69), ID_EX_Q(42 DOWNTO 39), ID_EX_Q(154 DOWNTO 150), ID_EX_Q(38), Clk, Rst, ExResult, ExReadData2, PcSrc);
+    excute : EX_Stage PORT MAP(EX_MEM_Q(108 DOWNTO 77), WB_WriteData, ID_EX_Q(138 DOWNTO 107), ID_EX_Q(106 DOWNTO 75), ID_EX_Q(74 DOWNTO 43), ID_EX_Q(37 DOWNTO 35), ID_EX_Q(34 DOWNTO 32), EX_MEM_Q(12 DOWNTO 10), MEM_WB_Q(2 DOWNTO 0), EX_MEM_Q(2), MEM_WB_Q(69), ID_EX_Q(42 DOWNTO 39), ID_EX_Q(154 DOWNTO 150), ID_EX_Q(38), Clk, Rst, ExResult, ExReadData2, PcSrc, ReadData_PC_MUX);
     --------------------------------------------EXECUTE UNDER TEST----------------------------------
     -- excute : EX_Stage PORT MAP(EX_MEM_Q(108 DOWNTO 77), "00000000000000000000000000000000", ID_EX_Q(138 DOWNTO 107), ID_EX_Q(106 DOWNTO 75), ID_EX_Q(74 DOWNTO 43), "00", "00", ID_EX_Q(42 DOWNTO 39), ID_EX_Q(154 DOWNTO 150), ID_EX_Q(38), Clk, Rst, ExResult, PcSrc);
     EX_MEM : ExMemBuffer PORT MAP(Clk, Rst, ExResult, ExReadData2, ID_EX_Q(31 DOWNTO 0), ID_EX_Q(34 DOWNTO 32), ID_EX_Q(145 DOWNTO 139), ID_EX_Q(148 DOWNTO 146), Nop_EX_MEM, EX_MEM_Q);

@@ -11,7 +11,8 @@ ENTITY EX_Stage IS
 		take_immediate, CLK, Rst : IN STD_LOGIC;
 		result : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
 		readData2Out : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-		pcSrc : OUT STD_LOGIC
+		pcSrc : OUT STD_LOGIC;
+		PC_MUX_IN : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
 	);
 
 END ENTITY;
@@ -81,6 +82,7 @@ ARCHITECTURE Excution OF EX_Stage IS
 	SIGNAL c_o, n_o, z_o, pcSRC_out : STD_LOGIC;
 	--------------------------------------------------------------------------------
 BEGIN
+	PC_MUX_IN <= data_in1;
 	result <= result_out;
 	pcSrc <= pcSRC_out;
 	readData2Out <= data_in2_mux;
