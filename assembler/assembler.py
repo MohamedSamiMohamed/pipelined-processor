@@ -5,7 +5,6 @@ with open("dectionary.txt") as dictFile:
         (key,val)=line.split()
         if(key[0]!='/'):
             dict[str(key)]=val
-print(dict)
 
 
 def expandInstruction(instruction):
@@ -23,7 +22,12 @@ def expandInstruction(instruction):
 
 def decodeInstruction(instruction):
     code=[""]
-    instItems=instruction.split(" ")
+    instItems=[]
+    inst=instruction.split(" ")
+    for item in inst:
+        if(item!=''):
+            instItems.append(item)
+
     print(instItems)
     #no operand instructions
     if(len(instItems)==1):
@@ -35,12 +39,7 @@ def decodeInstruction(instruction):
         if(operands.find(",")!=-1):
             op1,op2=operands.split(",")
             # code[0]+=dict[op1]
-            if(op2.isdecimal()):
-                val = int(op2,16)
-                imm = "{0:16b}".format(val).replace(" ","0")
-                code.append(str(imm))
-                op2=op1
-            elif(op2.find("(")!=-1):
+            if(op2.find("(")!=-1):
                 op2Offset=op2.split("(")[0]
                 op2Reg = (op2.split("(")[1]).split(")")[0]
                 val = int(op2Offset,16)
@@ -48,6 +47,12 @@ def decodeInstruction(instruction):
                 code.append(str(offset))
                 op2=op1
                 op1=op2Reg
+            elif(op2.isdecimal() or not (op2 in dict)):
+                print(op2)
+                val = int(op2,16)
+                imm = "{0:16b}".format(val).replace(" ","0")
+                code.append(str(imm))
+                op2=op1
 
             code[0]+=dict[op1]
             code[0]+=dict[op2]
