@@ -8,6 +8,7 @@ ENTITY ForwardingUnit IS
               Clk , Rst : in std_logic;
               ID_EX_Rsrc_Code , ID_EX_Rdst_Code ,EX_MEM_Rdst_Code ,MEM_WB_Rdst_Code : in std_logic_vector(2 downto 0);
               EX_MEM_RegWriteEnable ,MEM_WB_RegWriteEnable : in std_logic;
+              OpCode : in std_logic_vector(4 downto 0);
               forwardIn1,forwardIn2 : out std_logic_vector(1 downto 0)
     );
 END ENTITY;
@@ -15,16 +16,17 @@ ARCHITECTURE ForwardingUnitArch OF ForwardingUnit IS
 BEGIN
 process(Clk)
 begin
-    if ((ID_EX_Rsrc_Code = EX_MEM_Rdst_Code) and (EX_MEM_RegWriteEnable ='1' ) and (Rst = '0') ) then 
+    if ((ID_EX_Rsrc_Code = EX_MEM_Rdst_Code) and (EX_MEM_RegWriteEnable ='1' ) and (Rst = '0') and (OpCode /="01001")) then 
     forwardIn1 <= "01";
-    elsif ((ID_EX_Rsrc_Code = MEM_WB_Rdst_Code) and (MEM_WB_RegWriteEnable ='1' ) and (Rst = '0') ) then
+    elsif ((ID_EX_Rsrc_Code = MEM_WB_Rdst_Code) and (MEM_WB_RegWriteEnable ='1' ) and (Rst = '0') and (OpCode /="01001") ) then
     forwardIn1 <= "10";
     else forwardIn1 <= "00";
     end if;
+    forwardIn2 <= "00";
 
-    if ((ID_EX_Rdst_Code = EX_MEM_Rdst_Code) and (EX_MEM_RegWriteEnable ='1' ) and (Rst = '0') ) then 
+    if ((ID_EX_Rdst_Code = EX_MEM_Rdst_Code) and (EX_MEM_RegWriteEnable ='1' ) and (Rst = '0') and (OpCode /="01001") ) then 
     forwardIn2 <= "01";
-    elsif ((ID_EX_Rdst_Code = MEM_WB_Rdst_Code) and (MEM_WB_RegWriteEnable ='1' ) and (Rst = '0') ) then
+    elsif ((ID_EX_Rdst_Code = MEM_WB_Rdst_Code) and (MEM_WB_RegWriteEnable ='1' ) and (Rst = '0') and (OpCode /="01001") ) then
     forwardIn2 <= "10";
     else forwardIn2 <= "00";
     end if;

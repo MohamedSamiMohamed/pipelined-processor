@@ -187,7 +187,7 @@ ARCHITECTURE CPUArch OF CPU IS
 BEGIN
     hazard : HazardDetection PORT MAP(Rst, Clk, ID_EX_Q(145), ID_EX_Q(149), ID_EX_Q(34 DOWNTO 32), IF_ID_Out(26 DOWNTO 24), IF_ID_Out(23 DOWNTO 21), PcSrc, Nop_ID_EX, Nop_EX_MEM, stall);
     ------------------------------------------------------------------------------------------------------------------
-    offset_imm_in_signal <= (31 DOWNTO 16 => IF_ID_Out(15)) & IF_ID_Out(15 DOWNTO 0);
+    offset_imm_in_signal <= (31 DOWNTO 16 =>'0') & IF_ID_Out(15 DOWNTO 0);
     fetch : fetchStage PORT MAP(Clk, Rst, EX_MEM_Q(4), MemDataRead, PcSrc, ReadData1, IF_ID_Out(63 DOWNTO 32), stall, IncrementedPc, Inst);
     ------------------------------------------FETCH FOR TEST----------------------------------------
     -- fetch : fetchStage PORT MAP(Clk, Rst,'0', MemDataRead, '0', ReadData1, IF_ID_Out(63 downto 32) ,IncrementedPc, Inst);

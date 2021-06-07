@@ -34,17 +34,13 @@ force -freeze sim:/cpu/Clk 1 0, 0 {50 ps} -r 100
 force -freeze sim:/cpu/Rst 1 0
 run
 force -freeze sim:/cpu/Rst 0 0
-run
 force -freeze sim:/cpu/Decode/Register_file/INPORT/input_reg 00000000000000000000000000000101 0
 run
+force -freeze sim:/cpu/Decode/Register_file/INPORT/input_reg 00000000000000000000000000011001 0
 run
+force -freeze sim:/cpu/Decode/Register_file/INPORT/input_reg 11111111111111111111111111111111 0
 run
-run
-run
-force -freeze sim:/cpu/Decode/Register_file/INPORT/input_reg 00000000000000000000000000010000 0
-run
-run
-run
+force -freeze sim:/cpu/Decode/Register_file/INPORT/input_reg 11111111111111111111001100100000 0
 run
 run
 run
