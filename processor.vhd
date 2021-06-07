@@ -82,6 +82,7 @@ ARCHITECTURE CPUArch OF CPU IS
             opCode : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
             take_immediate, CLK, Rst : IN STD_LOGIC;
             result : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+            readData2Out : out std_logic_vector(31 downto 0);
             pcSrc : OUT STD_LOGIC
         );
     END COMPONENT;
@@ -178,7 +179,7 @@ ARCHITECTURE CPUArch OF CPU IS
     SIGNAL WB_WriteData : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL MemDataRead : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL MEM_WB_Q : STD_LOGIC_VECTOR(69 DOWNTO 0);
-    SIGNAL offset_imm_in_signal : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL offset_imm_in_signal ,ExReadData2 : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL Nop_ID_EX : STD_LOGIC;
     SIGNAL Nop_EX_MEM : STD_LOGIC;
     SIGNAL stall : STD_LOGIC;
@@ -201,10 +202,10 @@ BEGIN
     -- ---------------------------------------------------------------------------
     -- ---------------------------------------EXCUTION UNIT-----------------------
     -- ---------------------------------------------------------------------------
-    excute : EX_Stage PORT MAP(EX_MEM_Q(108 DOWNTO 77), WB_WriteData, ID_EX_Q(138 DOWNTO 107), ID_EX_Q(106 DOWNTO 75), ID_EX_Q(74 DOWNTO 43), ID_EX_Q(37 DOWNTO 35), ID_EX_Q(34 DOWNTO 32), EX_MEM_Q(12 DOWNTO 10), MEM_WB_Q(2 DOWNTO 0), EX_MEM_Q(2), MEM_WB_Q(69), ID_EX_Q(42 DOWNTO 39), ID_EX_Q(154 DOWNTO 150), ID_EX_Q(38), Clk, Rst, ExResult, PcSrc);
+    excute : EX_Stage PORT MAP(EX_MEM_Q(108 DOWNTO 77), WB_WriteData, ID_EX_Q(138 DOWNTO 107), ID_EX_Q(106 DOWNTO 75), ID_EX_Q(74 DOWNTO 43), ID_EX_Q(37 DOWNTO 35), ID_EX_Q(34 DOWNTO 32), EX_MEM_Q(12 DOWNTO 10), MEM_WB_Q(2 DOWNTO 0), EX_MEM_Q(2), MEM_WB_Q(69), ID_EX_Q(42 DOWNTO 39), ID_EX_Q(154 DOWNTO 150), ID_EX_Q(38), Clk, Rst, ExResult,ExReadData2, PcSrc);
     --------------------------------------------EXECUTE UNDER TEST----------------------------------
     -- excute : EX_Stage PORT MAP(EX_MEM_Q(108 DOWNTO 77), "00000000000000000000000000000000", ID_EX_Q(138 DOWNTO 107), ID_EX_Q(106 DOWNTO 75), ID_EX_Q(74 DOWNTO 43), "00", "00", ID_EX_Q(42 DOWNTO 39), ID_EX_Q(154 DOWNTO 150), ID_EX_Q(38), Clk, Rst, ExResult, PcSrc);
-    EX_MEM : ExMemBuffer PORT MAP(Clk, Rst, ExResult, ID_EX_Q(106 DOWNTO 75), ID_EX_Q(31 DOWNTO 0), ID_EX_Q(34 DOWNTO 32), ID_EX_Q(145 DOWNTO 139), ID_EX_Q(148 DOWNTO 146), Nop_EX_MEM, EX_MEM_Q);
+    EX_MEM : ExMemBuffer PORT MAP(Clk, Rst, ExResult, ExReadData2, ID_EX_Q(31 DOWNTO 0), ID_EX_Q(34 DOWNTO 32), ID_EX_Q(145 DOWNTO 139), ID_EX_Q(148 DOWNTO 146), Nop_EX_MEM, EX_MEM_Q);
     -- ---------------------------------------------------------------------------
     -- ---------------------------------------MEMORY UNIT-----------------------
     -- ---------------------------------------------------------------------------

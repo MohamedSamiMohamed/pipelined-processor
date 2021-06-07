@@ -10,6 +10,7 @@ ENTITY EX_Stage IS
 		opCode : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
 		take_immediate, CLK, Rst : IN STD_LOGIC;
 		result : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+		readData2Out : out std_logic_vector(31 downto 0);
 		pcSrc : OUT STD_LOGIC
 	);
 
@@ -81,6 +82,7 @@ ARCHITECTURE Excution OF EX_Stage IS
 BEGIN
 	result <= result_out;
 	pcSrc <= pcSRC_out;
+	readData2Out <= data_in2_mux;
 	ccr_in <= c_o & n_o & z_o;
 	mux1 : Mux_4x1 GENERIC MAP(32) PORT MAP(read_data1, ex_mem_data, mem_wb_data, (OTHERS => '0'), forward_in1, data_in1);
 	mux2 : Mux_4x1 GENERIC MAP(32) PORT MAP(read_data2, ex_mem_data, mem_wb_data, (OTHERS => '0'), forward_in2, data_in2_mux);

@@ -12,3 +12,5 @@
 inc R1
 inc R2
 STD R1,10(R2)
+LDD R3,10(R1)
+inc R3
